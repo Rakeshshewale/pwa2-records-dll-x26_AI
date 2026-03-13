@@ -286,8 +286,9 @@ document.getElementById('fetchDaily').addEventListener('click', async () => {
   const getLocalDaily = () => localEntries.filter(e => e.date === dt).map(mapLocal);
 
   try {
-    const r = await fetch(API + '?action=daily&date=' + encodeURIComponent(dt) + '&authToken=Rakesh9869');
-    const d = await r.json();
+    const r = await fetch(API + '?action=daily&date=' + encodeURIComponent(dt) + '&authToken=Rakesh9869', {redirect: "follow"});
+    const txt = await r.text();
+    const d = JSON.parse(txt);
     const apiRows = (d.data && d.data.length) ? d.data : [];
     const localRows = getLocalDaily();
     const allRows = [...apiRows, ...localRows];
@@ -329,7 +330,7 @@ function renderDaily(rows) {
     if (type === 'Expense') total += amt;
 
     const label = type === 'Credit card bill' ? (det || 'CC Bill') : cat;
-    const sub = type === 'Credit card bill' ? 'CC Bill Payment' : type === 'Opening balance' ? det : (det + (mode ? ' · ' + mode : ''));
+    const sub = type === 'Credit card bill' ? 'CC Bill Payment' : cat === 'Opening balance' ? det : (det + (mode ? ' · ' + mode : ''));
 
     html += `<div class="d-entry ${cls}"><div class="d-info"><div class="d-cat">${label}</div><div class="d-sub">${sub}</div></div><div class="d-amt ${amtCls}">${type === 'Expense' ? '-' : ''}${fmt(amt)}</div></div>`;
   });
@@ -499,8 +500,9 @@ document.getElementById('fetchSummary').addEventListener('click', async () => {
   }).map(mapLocal);
 
   try {
-    const r = await fetch(API + '?action=monthdata&month=' + m + '&year=' + y + '&authToken=Rakesh9869');
-    const d = await r.json();
+    const r = await fetch(API + '?action=monthdata&month=' + m + '&year=' + y + '&authToken=Rakesh9869', {redirect: "follow"});
+    const txt = await r.text();
+    const d = JSON.parse(txt);
     const apiRows = (d.data && d.data.length) ? d.data : [];
     const localRows = getLocal();
     const allRows = [...apiRows, ...localRows];
