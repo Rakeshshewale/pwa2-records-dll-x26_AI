@@ -323,9 +323,9 @@ function renderDaily(rows) {
     const mode = r.expenseMode || r.mode || '';
 
     let cls = 'exp', amtCls = 'exp';
-    if (type === 'Money transfer') { cls = 'trn'; amtCls = 'trn'; }
+    if (cat === 'Opening balance') { cls = 'obal'; amtCls = 'obal'; }
+    else if (type === 'Money transfer' || cat === 'Money transfer') { cls = 'trn'; amtCls = 'trn'; }
     else if (type === 'Credit card bill') { cls = 'ccb'; amtCls = 'ccb'; }
-    else if (type === 'Opening balance') { cls = 'obal'; amtCls = 'obal'; }
     if (type === 'Expense') total += amt;
 
     const label = type === 'Credit card bill' ? (det || 'CC Bill') : cat;
@@ -363,14 +363,14 @@ function calcSummary(rows) {
     const mode = r.expenseMode || r.mode || '';
     const dt = r.date ? new Date(r.date) : null;
 
-    if (type === "Opening balance") {
-      if (det === "E-wallet balance") bal.Wallet = amt;
-      else if (det === "ICICI balance") bal.ICICI = amt;
-      else if (det === "HDFC balance") bal.HDFC = amt;
-      else if (det === "Kotak Balance") bal.Kotak = amt;
-      else if (det === "Cash") bal.Cash = amt;
+    if (cat === "Opening balance") {
+      if (det === "E-wallet balance") bal.Wallet += amt;
+      else if (det === "ICICI balance") bal.ICICI += amt;
+      else if (det === "HDFC balance") bal.HDFC += amt;
+      else if (det === "Kotak Balance") bal.Kotak += amt;
+      else if (det === "Cash") bal.Cash += amt;
     }
-    else if (type === "Money transfer") {
+    else if (cat === "Money transfer") {
       totalTransfer += amt;
       if (det === "Salary to Kotak") { bal.Kotak += amt; bal.HDFC -= amt; }
       else if (det === "Salary to ICICI") { bal.ICICI += amt; bal.HDFC -= amt; }
@@ -401,7 +401,7 @@ function calcSummary(rows) {
     const type = r.transactionType || r.type || '';
     const dt = r.date ? new Date(r.date) : null;
     const amt = parseFloat(r.amount) || 0;
-    if (type === "Money transfer" && det === "E-wallet topup" && dt) { if (dt.getDate() >= 3) ccFrom3rd += amt; }
+    if (cat === "Money transfer" && det === "E-wallet topup" && dt) { if (dt.getDate() >= 3) ccFrom3rd += amt; }
   });
 
   const available = totalSalary - totalExpense - totalInvest;
