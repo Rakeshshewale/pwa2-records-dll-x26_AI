@@ -43,7 +43,7 @@ const DET_SHORT = {
 };
 
 const DET_COLS = {
-  "Food":5,"Shopping":5,"Transportation":5,"Bills":5,
+  "Food":5,"Shopping":4,"Transportation":5,"Bills":5,
   "Entertainment":5,"Personal care":5,"Insurance":3,"Other Expenses":5,
   "Money transfer":3,"Opening balance":3
 };
@@ -174,11 +174,16 @@ function buildDet(cat) {
   dg.innerHTML = '';
   const items = CATS[cat] || [];
   const cols = DET_COLS[cat] || Math.min(items.length, 5);
-  dg.style.gridTemplateColumns = `repeat(${cols},1fr)`;
+  dg.style.gridTemplateColumns = '';
+  dg.style.display = 'flex';
+  dg.style.flexWrap = 'wrap';
+  dg.style.justifyContent = 'center';
+  dg.style.gap = '4px';
 
   items.forEach(d => {
     const b = document.createElement('button');
     b.className = 'btn btn-det';
+    b.style.width = 'calc(33.33% - 3px)';
     b.textContent = DET_SHORT[d] || d;
     b.dataset.val = d;
     dg.appendChild(b);
