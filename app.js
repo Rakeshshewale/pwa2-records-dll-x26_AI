@@ -449,7 +449,13 @@ function renderSummary(d) {
       data: { labels: cShort, datasets: [{ data: cData, backgroundColor: COLORS.slice(0, cLabels.length), borderRadius: 4, borderSkipped: false }] },
       options: { responsive: true, indexAxis: 'y', plugins: {
         legend: { display: false },
-        datalabels: { anchor: 'end', align: 'right', color: '#334155', font: { weight: 'bold', size: 9 }, formatter: v => fmtK(v) },
+        datalabels: {
+          font: { weight: 'bold', size: 9 },
+          formatter: v => fmtK(v),
+          anchor: function(ctx) { var max = Math.max.apply(null, ctx.dataset.data); return ctx.dataset.data[ctx.dataIndex] >= max * 0.6 ? 'end' : 'end'; },
+          align: function(ctx) { var max = Math.max.apply(null, ctx.dataset.data); return ctx.dataset.data[ctx.dataIndex] >= max * 0.6 ? 'start' : 'right'; },
+          color: function(ctx) { var max = Math.max.apply(null, ctx.dataset.data); return ctx.dataset.data[ctx.dataIndex] >= max * 0.6 ? '#ffffff' : '#334155'; }
+        },
         tooltip: { callbacks: { label: ctx => fmt(ctx.raw) } }
       }, scales: { x: { display: false, grid: { display: false } }, y: { grid: { display: false }, ticks: { font: { size: 9, weight: 'bold' } } } } }
     }));
