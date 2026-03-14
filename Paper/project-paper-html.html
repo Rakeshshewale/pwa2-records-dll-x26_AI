@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Daily Expense Tracker V2 — Project Paper</title>
+<style>
+@media print{body{padding:0;font-size:11px}h1{font-size:22px}h2{font-size:16px;page-break-after:avoid}h3{font-size:13px}pre{font-size:9px}.no-print{display:none}.page-break{page-break-before:always}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;color:#1a1a2e;line-height:1.7;padding:40px 20px;max-width:820px;margin:0 auto;background:#fff}
+h1{font-size:28px;font-weight:700;color:#4f46e5;text-align:center;margin-bottom:4px;letter-spacing:-.5px}
+.subtitle{text-align:center;font-size:14px;color:#64748b;margin-bottom:6px}
+.meta{text-align:center;font-size:12px;color:#94a3b8;margin-bottom:30px;padding-bottom:20px;border-bottom:2px solid #4f46e5}
+.meta span{margin:0 8px}
+h2{font-size:20px;font-weight:700;color:#4f46e5;margin:36px 0 14px;padding:8px 0 6px;border-bottom:1.5px solid #e2e8f0}
+h3{font-size:15px;font-weight:700;color:#334155;margin:20px 0 8px}
+p{margin:0 0 12px;font-size:14px}
+ul,ol{margin:0 0 14px 24px;font-size:14px}
+li{margin-bottom:4px}
+table{width:100%;border-collapse:collapse;margin:12px 0 18px;font-size:12.5px}
+th{background:#f1f5f9;padding:8px 10px;text-align:left;font-weight:700;color:#334155;border:1px solid #e2e8f0;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+td{padding:7px 10px;border:1px solid #e2e8f0;color:#475569;vertical-align:top}
+tr:nth-child(even){background:#fafbfc}
+code{font-family:'SF Mono',Consolas,monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:12px;color:#4f46e5}
+pre{background:#1e293b;color:#e2e8f0;padding:16px;border-radius:8px;overflow-x:auto;font-size:11.5px;line-height:1.5;margin:10px 0 16px;font-family:'SF Mono',Consolas,monospace}
+pre code{background:none;color:inherit;padding:0}
+.arch-box{background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:10px;padding:16px;margin:14px 0 18px;font-family:'SF Mono',Consolas,monospace;font-size:11px;line-height:1.6;white-space:pre;overflow-x:auto;color:#334155}
+.highlight{background:linear-gradient(135deg,#eff0ff,#f5f3ff);border-left:4px solid #4f46e5;padding:14px 18px;border-radius:0 8px 8px 0;margin:14px 0 18px;font-size:13px}
+.highlight strong{color:#4f46e5}
+.bug-box{background:#fef2f2;border-left:4px solid #ef4444;padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0 16px;font-size:13px}
+.bug-box strong{color:#ef4444}
+.fix-box{background:#f0fdf4;border-left:4px solid #22c55e;padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0 16px;font-size:13px}
+.fix-box strong{color:#16a34a}
+.badge{display:inline-block;padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.b-green{background:#dcfce7;color:#166534}
+.b-orange{background:#fff7ed;color:#9a3412}
+.b-gray{background:#f1f5f9;color:#475569}
+.b-red{background:#fef2f2;color:#991b1b}
+.b-blue{background:#eff6ff;color:#1e40af}
+.b-purple{background:#f5f3ff;color:#5b21b6}
+.toc{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:20px 24px;margin:0 0 30px}
+.toc-title{font-size:14px;font-weight:700;color:#334155;margin-bottom:10px}
+.toc ol{margin:0;padding-left:20px}
+.toc li{font-size:13px;color:#4f46e5;margin-bottom:3px}
+.toc a{color:#4f46e5;text-decoration:none}
+.toc a:hover{text-decoration:underline}
+.print-btn{display:block;margin:0 auto 30px;padding:12px 32px;background:#4f46e5;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer}
+.print-btn:hover{background:#4338ca}
+.formula{background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:10px 14px;margin:8px 0 14px;font-family:'SF Mono',Consolas,monospace;font-size:12px;color:#92400e}
+.timeline{border-left:3px solid #4f46e5;margin:12px 0 18px 8px;padding-left:20px}
+.timeline .step{margin-bottom:10px;position:relative}
+.timeline .step::before{content:'';position:absolute;left:-26px;top:6px;width:10px;height:10px;border-radius:50%;background:#4f46e5}
+.timeline .step strong{font-size:13px;color:#334155}
+.timeline .step p{font-size:12px;color:#64748b;margin:2px 0 0}
+.checklist{list-style:none;padding:0;margin:10px 0 16px}
+.checklist li{padding:4px 0 4px 24px;position:relative;font-size:13px}
+.checklist li::before{content:'☐';position:absolute;left:0;color:#94a3b8}
+hr{border:none;border-top:1px solid #e2e8f0;margin:30px 0}
+</style>
+</head>
+<body>
+
+<button class="print-btn no-print" onclick="window.print()">Download as PDF (Print → Save as PDF)</button>
+
+<h1>Daily Expense Tracker V2</h1>
+<div class="subtitle">Progressive Web App — Project Documentation</div>
+<div class="meta">
+<span><strong>Author:</strong> Rakesh Shewale</span>
+<span><strong>AI:</strong> Claude (Anthropic)</span>
+<span><strong>Date:</strong> March 2026</span><br/>
+<span><strong>Stack:</strong> HTML/CSS/JS · Google Apps Script · Google Sheets · GitHub Pages</span><br/>
+<span><strong>Repo:</strong> pwa2-records-dll-x26_AI</span>
+</div>
+
+<div class="toc">
+<div class="toc-title">Table of Contents</div>
+<ol>
+<li><a href="#s1">Executive Summary</a></li>
+<li><a href="#s2">Design Goals & Constraints</a></li>
+<li><a href="#s3">System Architecture</a></li>
+<li><a href="#s4">Google Sheet Structure</a></li>
+<li><a href="#s5">Frontend Architecture</a></li>
+<li><a href="#s6">Entry Tab — Complete Field Logic</a></li>
+<li><a href="#s7">Balance Calculation Engine</a></li>
+<li><a href="#s8">Summary Tab — Charts & Visualizations</a></li>
+<li><a href="#s9">Daily Tab</a></li>
+<li><a href="#s10">CSS & Responsive Design</a></li>
+<li><a href="#s11">PWA Configuration</a></li>
+<li><a href="#s12">Google Apps Script Backend</a></li>
+<li><a href="#s13">Debugging Log — 8 Bugs Found & Fixed</a></li>
+<li><a href="#s14">UI Evolution Timeline</a></li>
+<li><a href="#s15">Security & Performance</a></li>
+<li><a href="#s16">Inputs for Future AI Models</a></li>
+<li><a href="#s17">Repository & Deployment</a></li>
+<li><a href="#s18">UI Mockups — All 3 Tabs</a></li>
+</ol>
+</div>
+
+<!-- ═══ SECTION 1 ═══ -->
+<h2 id="s1">1. Executive Summary</h2>
+<p>This document covers the end-to-end design, development, and deployment of a Progressive Web App (PWA) for personal expense tracking. The app modernizes an existing 2-year-old expense tracker built with HTML form dropdowns and Google Sheets, replacing all inputs with a tap-first mobile UI while preserving complete backward compatibility with the existing Google Sheets backend and dashboard SUMIF formulas.</p>
+<p>The project was built iteratively through human-AI collaboration over a single session, with real-time testing and debugging on a live mobile device.</p>
+
+<div class="highlight">
+<strong>Key achievement:</strong> The most common expense entry (UPI food purchase) requires only 2 taps + typing the amount + pressing Enter. The previous version required 5 dropdown selections.
+</div>
+
+<!-- ═══ SECTION 2 ═══ -->
+<h2 id="s2">2. Design Goals & Constraints</h2>
+
+<h3>2.1 Primary Objectives</h3>
+<table>
+<tr><th>Goal</th><th>Approach</th></tr>
+<tr><td>Speed of entry</td><td>Buttons replace all dropdowns; smart defaults auto-select most common options</td></tr>
+<tr><td>Zero disruption</td><td>Run side-by-side with existing app; same Google Sheet, same column structure</td></tr>
+<tr><td>Mobile-first</td><td>Optimized for one-handed phone use with touch-friendly buttons</td></tr>
+<tr><td>Offline capable</td><td>PWA with service worker caching for low-connectivity areas</td></tr>
+<tr><td>Visual insights</td><td>Daily view and monthly summary with charts built into the app</td></tr>
+</table>
+
+<h3>2.2 Hard Constraints</h3>
+<ul>
+<li>All category/subcategory strings must be <strong>character-perfect</strong> matches to existing Google Sheet SUMIF formulas</li>
+<li>The Google Apps Script POST endpoint and authentication remain unchanged</li>
+<li>The Google Sheet column structure (A–O) is frozen</li>
+<li>No external databases — Google Sheets is the single source of truth</li>
+</ul>
+
+<h3>2.3 UX Principles</h3>
+<ul>
+<li><strong>Tap, don't type</strong> — buttons replace all dropdowns</li>
+<li><strong>Smart defaults</strong> — most common selections auto-highlight on type selection</li>
+<li><strong>No interruptions</strong> — subtle "Saved ✅" below submit, auto-clears in 1.4s</li>
+<li><strong>Static layout</strong> — no swipeable rows, no collapsible sections</li>
+<li><strong>Glassmorphism UI</strong> — modern frosted-glass aesthetic with color-coded buttons</li>
+</ul>
+
+<!-- ═══ SECTION 3 ═══ -->
+<h2 id="s3">3. System Architecture</h2>
+
+<h3>3.1 Component Diagram</h3>
+<div class="arch-box">┌──────────────────────────────────────────────────┐
+│                  USER (Mobile)                    │
+│            Progressive Web App (PWA)              │
+│  ┌────────┐   ┌────────┐   ┌──────────┐         │
+│  │ Entry  │   │ Daily  │   │ Summary  │         │
+│  │  Tab   │   │  Tab   │   │   Tab    │         │
+│  └───┬────┘   └───┬────┘   └────┬─────┘         │
+│      │ POST       │ GET         │ GET            │
+└──────┼────────────┼─────────────┼────────────────┘
+       ▼            ▼             ▼
+┌──────────────────────────────────────────────────┐
+│          Google Apps Script (Backend)             │
+│  ┌──────────┐         ┌──────────┐              │
+│  │ doPost() │         │ doGet()  │              │
+│  │  Write   │         │  Read    │              │
+│  └────┬─────┘         └────┬─────┘              │
+│       ▼                    ▼                     │
+│  ┌──────────────────────────────────┐            │
+│  │  Google Sheets                    │            │
+│  │  Sheet: "Form entries"            │            │
+│  │  Columns A–O · ~2 years data     │            │
+│  └──────────────────────────────────┘            │
+└──────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────┐
+│           GitHub Pages (Static Hosting)           │
+│  index.html · app.js · service-worker.js         │
+│  manifest.json · icons/                          │
+└──────────────────────────────────────────────────┘</div>
+
+<h3>3.2 Data Flow</h3>
+<p><strong>Write path (Entry → Sheet):</strong> User taps buttons → enters amount → submit fires POST with URLSearchParams → Apps Script validates auth → maps category to correct column (E–N) → appends row to sheet.</p>
+<p><strong>Read path (Sheet → Daily/Summary):</strong> Frontend sends GET with action + date/month + auth → Apps Script reads sheet, filters rows → reverse-maps columns E–N to category/categoryValue → returns JSON → frontend calculates balances and renders charts.</p>
+
+<!-- ═══ SECTION 4 ═══ -->
+<h2 id="s4">4. Google Sheet Structure</h2>
+
+<h3>4.1 Column Mapping (A–O)</h3>
+<table>
+<tr><th>Column</th><th>Index</th><th>Field</th><th>Content</th></tr>
+<tr><td>A</td><td>0</td><td>Timestamp</td><td>Auto-generated date/time</td></tr>
+<tr><td>B</td><td>1</td><td>Amount</td><td>Numeric value</td></tr>
+<tr><td>C</td><td>2</td><td>Transaction type</td><td>"Expense", "Money transfer", "Credit card bill"</td></tr>
+<tr><td>D</td><td>3</td><td>Expense mode</td><td>"UPI", "Credit card", "E-wallet", "Cash", or empty</td></tr>
+<tr><td>E</td><td>4</td><td>Shopping</td><td>Subcategory if category = Shopping</td></tr>
+<tr><td>F</td><td>5</td><td>Food</td><td>Subcategory if category = Food</td></tr>
+<tr><td>G</td><td>6</td><td>Transportation</td><td>Subcategory if category = Transportation</td></tr>
+<tr><td>H</td><td>7</td><td>Bills</td><td>Subcategory if category = Bills</td></tr>
+<tr><td>I</td><td>8</td><td>Entertainment</td><td>Subcategory if category = Entertainment</td></tr>
+<tr><td>J</td><td>9</td><td>Personal care</td><td>Subcategory if category = Personal care</td></tr>
+<tr><td>K</td><td>10</td><td>Insurance</td><td>Subcategory if category = Insurance</td></tr>
+<tr><td>L</td><td>11</td><td>Other Expenses</td><td>Subcategory if category = Other Expenses</td></tr>
+<tr><td>M</td><td>12</td><td>Money transfer</td><td>Subcategory if category = Money transfer</td></tr>
+<tr><td>N</td><td>13</td><td>Opening balance</td><td>Subcategory if category = Opening balance</td></tr>
+<tr><td>O</td><td>14</td><td>Additional info</td><td>Free text note or CC card name</td></tr>
+</table>
+
+<h3>4.2 Category-per-Column Design</h3>
+<div class="highlight">
+<strong>Key design decision:</strong> The sheet uses one column per category (E–N) rather than a single "category" column. Only one of these columns has a value per row. This supports the Dashboard sheet's SUMIF formulas referencing specific column headers.
+</div>
+
+<p><strong>doPost() writes:</strong></p>
+<pre><code>const categoryIndex = categoryColumns.indexOf(e.parameter.category);
+if (categoryIndex !== -1) {
+  row[categoryIndex + 4] = e.parameter.categoryValue || '';
+}</code></pre>
+
+<p><strong>doGet() reads (reverse mapping):</strong></p>
+<pre><code>for (var i = 0; i < categoryColumns.length; i++) {
+  var val = row[i + 4];
+  if (val && val.toString().trim() !== "") {
+    category = categoryColumns[i];
+    categoryValue = val.toString().trim();
+    break;
+  }
+}</code></pre>
+
+<!-- ═══ SECTION 5 ═══ -->
+<h2 id="s5">5. Frontend Architecture</h2>
+
+<h3>5.1 File Structure</h3>
+<pre><code>pwa2-records-dll-x26_AI/
+├── index.html          # HTML + inline CSS (all styles)
+├── app.js              # All application logic
+├── service-worker.js   # PWA offline caching
+├── manifest.json       # PWA configuration
+└── icons/
+    ├── icon-192.png
+    └── icon-512.png</code></pre>
+
+<h3>5.2 State Management</h3>
+<p>Simple object-based state, no framework:</p>
+<pre><code>let S = { type: "", mode: "", cat: "", det: "", cc: "" };</code></pre>
+
+<h3>5.3 API-Only Data Fetching</h3>
+<p>Daily and Summary tabs fetch data exclusively from the Google Apps Script backend via GET requests. No local caching or fallback — a working backend connection is required for these tabs to function.</p>
+
+<!-- ═══ SECTION 6 ═══ -->
+<h2 id="s6">6. Entry Tab — Complete Field Logic</h2>
+
+<h3>6.1 Transaction Types</h3>
+<table>
+<tr><th>Button</th><th>Backend Value</th><th>Shows</th><th>Hides</th><th>Auto-selects</th></tr>
+<tr><td><span class="badge b-green">Expense</span></td><td><code>Expense</code></td><td>Mode, Category (8), Details</td><td>CC cards</td><td>UPI + Food + Dining out</td></tr>
+<tr><td><span class="badge b-green">Transfer</span></td><td><code>Money transfer</code></td><td>Category (2), Details</td><td>Mode, CC cards</td><td>Money transfer + Salary</td></tr>
+<tr><td><span class="badge b-green">CC Bill</span></td><td><code>Credit card bill</code></td><td>CC cards (6)</td><td>Mode, Category, Details, Note</td><td>—</td></tr>
+</table>
+
+<h3>6.2 Payment Modes (Expense only)</h3>
+<table>
+<tr><th>Button</th><th>Backend Value</th><th>Balance Deduction</th></tr>
+<tr><td><span class="badge b-green">UPI</span></td><td><code>UPI</code></td><td>−Kotak</td></tr>
+<tr><td><span class="badge b-green">Card</span></td><td><code>Credit card</code></td><td>No deduction (billed later)</td></tr>
+<tr><td><span class="badge b-green">Wallet</span></td><td><code>E-wallet</code></td><td>−Wallet</td></tr>
+<tr><td><span class="badge b-green">Cash</span></td><td><code>Cash</code></td><td>−Cash</td></tr>
+</table>
+
+<h3>6.3 Expense Categories (4 per row)</h3>
+<table>
+<tr><th>Button Label</th><th>Backend Value</th><th>Sheet Column</th></tr>
+<tr><td><span class="badge b-orange">Food</span></td><td><code>Food</code></td><td>F</td></tr>
+<tr><td><span class="badge b-orange">Shopping</span></td><td><code>Shopping</code></td><td>E</td></tr>
+<tr><td><span class="badge b-orange">Transport</span></td><td><code>Transportation</code></td><td>G</td></tr>
+<tr><td><span class="badge b-orange">Bills</span></td><td><code>Bills</code></td><td>H</td></tr>
+<tr><td><span class="badge b-orange">Entertain</span></td><td><code>Entertainment</code></td><td>I</td></tr>
+<tr><td><span class="badge b-orange">Personal</span></td><td><code>Personal care</code></td><td>J</td></tr>
+<tr><td><span class="badge b-orange">Insurance</span></td><td><code>Insurance</code></td><td>K</td></tr>
+<tr><td><span class="badge b-orange">Other Exp</span></td><td><code>Other Expenses</code></td><td>L</td></tr>
+</table>
+
+<h3>6.4 Transfer Categories (2 per row, wide buttons)</h3>
+<table>
+<tr><th>Button Label</th><th>Backend Value</th><th>Sheet Column</th></tr>
+<tr><td><span class="badge b-orange">Money transfer</span></td><td><code>Money transfer</code></td><td>M</td></tr>
+<tr><td><span class="badge b-orange">Opening balance</span></td><td><code>Opening balance</code></td><td>N</td></tr>
+</table>
+
+<h3>6.5 All Category Details (3 per row, center-aligned remainder)</h3>
+<table>
+<tr><th>Category</th><th>Button Labels</th><th>Exact Backend Values</th></tr>
+<tr><td>Food</td><td><span class="badge b-gray">Dining</span> <span class="badge b-gray">Snacks</span> <span class="badge b-gray">Delivery</span> <span class="badge b-gray">Groceries</span> <span class="badge b-gray">Fruit</span></td><td><code>Dining out, Snacks, Food deliveries, Groceries, Fruit</code></td></tr>
+<tr><td>Shopping</td><td><span class="badge b-gray">Mart</span> <span class="badge b-gray">Amazon</span> <span class="badge b-gray">Electronics</span> <span class="badge b-gray">Clothing</span> <span class="badge b-gray">Other</span></td><td><code>Shopping mart, Amazon, Electronics, Clothing, Other</code></td></tr>
+<tr><td>Transport</td><td><span class="badge b-gray">Public</span> <span class="badge b-gray">Cab</span> <span class="badge b-gray">Flight/Hotel</span> <span class="badge b-gray">Rental</span> <span class="badge b-gray">Other</span></td><td><code>Public transport, Cab, Flight/Hotel, Rental vehicle, Other</code></td></tr>
+<tr><td>Bills</td><td><span class="badge b-gray">Electricity</span> <span class="badge b-gray">Rent</span> <span class="badge b-gray">Phone</span> <span class="badge b-gray">Cable</span> <span class="badge b-gray">Other</span></td><td><code>Electricity, Rent, Phone bills, Cable, Other</code></td></tr>
+<tr><td>Entertain</td><td><span class="badge b-gray">Ytube+</span> <span class="badge b-gray">Apple</span> <span class="badge b-gray">Outings</span> <span class="badge b-gray">Movies</span> <span class="badge b-gray">Other</span></td><td><code>Ytube+, Apple account, Outings, Movies, Other</code></td></tr>
+<tr><td>Personal</td><td><span class="badge b-gray">Medical</span> <span class="badge b-gray">Saloon</span> <span class="badge b-gray">Cosmetics</span> <span class="badge b-gray">Doctor</span> <span class="badge b-gray">Other</span></td><td><code>Medical, Hair saloon spa, Cosmetics, Dr appointments, Other</code></td></tr>
+<tr><td>Insurance</td><td><span class="badge b-gray">LIC</span> <span class="badge b-gray">Health Ins</span> <span class="badge b-gray">Term Ins</span></td><td><code>LIC, Health Insurance, Term Insurance</code></td></tr>
+<tr><td>Other Exp</td><td><span class="badge b-gray">Laundry</span> <span class="badge b-gray">Splitwise</span> <span class="badge b-gray">Career</span> <span class="badge b-gray">Vacation</span> <span class="badge b-gray">Other</span></td><td><code>Laundry, Splitwise pay, Career, Vacation, Other</code></td></tr>
+</table>
+
+<h3>6.6 Money Transfer Details (3 per row)</h3>
+<table>
+<tr><th>Button</th><th>Backend Value</th><th>Balance Logic</th></tr>
+<tr><td><span class="badge b-gray">Salary</span></td><td><code>Salary</code></td><td><span class="badge b-blue">+HDFC</span></td></tr>
+<tr><td><span class="badge b-gray">Salary→Kotak</span></td><td><code>Salary to Kotak</code></td><td><span class="badge b-red">−HDFC</span> <span class="badge b-blue">+Kotak</span></td></tr>
+<tr><td><span class="badge b-gray">Salary→ICICI</span></td><td><code>Salary to ICICI</code></td><td><span class="badge b-red">−HDFC</span> <span class="badge b-blue">+ICICI</span></td></tr>
+<tr><td><span class="badge b-gray">ICICI→Kotak</span></td><td><code>ICICI to Kotak</code></td><td><span class="badge b-red">−ICICI</span> <span class="badge b-blue">+Kotak</span></td></tr>
+<tr><td><span class="badge b-gray">Kotak→ICICI</span></td><td><code>Kotak to ICICI</code></td><td><span class="badge b-red">−Kotak</span> <span class="badge b-blue">+ICICI</span></td></tr>
+<tr><td><span class="badge b-gray">Cash W/D</span></td><td><code>Cash withdrawal</code></td><td><span class="badge b-red">−HDFC</span> <span class="badge b-blue">+Cash</span></td></tr>
+<tr><td><span class="badge b-gray">Investment</span></td><td><code>Investment</code></td><td><span class="badge b-red">−ICICI</span></td></tr>
+<tr><td><span class="badge b-gray">Other Income</span></td><td><code>Other income</code></td><td><span class="badge b-blue">+Kotak</span></td></tr>
+<tr><td><span class="badge b-gray">Wallet Topup</span></td><td><code>E-wallet topup</code></td><td><span class="badge b-blue">+Wallet</span> (CC charge, adds to next bill if ≥3rd)</td></tr>
+</table>
+
+<h3>6.7 Opening Balance Details (3 per row)</h3>
+<table>
+<tr><th>Button</th><th>Backend Value</th><th>Sets</th></tr>
+<tr><td><span class="badge b-gray">HDFC</span></td><td><code>HDFC balance</code></td><td>bal.HDFC += amount</td></tr>
+<tr><td><span class="badge b-gray">ICICI</span></td><td><code>ICICI balance</code></td><td>bal.ICICI += amount</td></tr>
+<tr><td><span class="badge b-gray">Kotak</span></td><td><code>Kotak Balance</code></td><td>bal.Kotak += amount (capital B)</td></tr>
+<tr><td><span class="badge b-gray">Wallet</span></td><td><code>E-wallet balance</code></td><td>bal.Wallet += amount</td></tr>
+<tr><td><span class="badge b-gray">Cash</span></td><td><code>Cash</code></td><td>bal.Cash += amount</td></tr>
+</table>
+
+<h3>6.8 Credit Card Buttons (CC Bill only, 3 per row)</h3>
+<p>Live, Amex, Sapphiro, Amazon Pay, Ixigo, Diners — selected name sent as <code>additionalInfo</code>. All CC bills deduct from HDFC.</p>
+
+<!-- ═══ SECTION 7 ═══ -->
+<h2 id="s7">7. Balance Calculation Engine</h2>
+
+<h3>7.1 Final Balance Formulas</h3>
+<div class="formula"><strong>HDFC</strong> = Opening + Salary − Salary to Kotak − Salary to ICICI − Cash withdrawal − CC bill payments</div>
+<div class="formula"><strong>Kotak</strong> = Opening + Salary to Kotak + ICICI to Kotak + Other income − Kotak to ICICI − all UPI expenses</div>
+<div class="formula"><strong>ICICI</strong> = Opening + Salary to ICICI + Kotak to ICICI − ICICI to Kotak − Investment</div>
+<div class="formula"><strong>Wallet</strong> = Opening + E-wallet topup − all Wallet expenses</div>
+<div class="formula"><strong>Cash</strong> = Opening + Cash withdrawal − all Cash expenses</div>
+<div class="formula"><strong>Salary Available</strong> = Salary − Expenses − Investment − CC Bills Paid</div>
+<div class="formula"><strong>Total</strong> = HDFC + Kotak + ICICI + Wallet + Cash</div>
+
+<h3>7.2 CC Next Bill (3rd–3rd Cycle)</h3>
+<p>Bill generation date is the 2nd, so expenses from the 3rd onwards count toward the next bill:</p>
+<pre><code>// Credit card expenses from 3rd onwards
+if (mode === "Credit card" && dt.getDate() >= 3) ccFrom3rd += amt;
+
+// E-wallet topup is also a CC charge
+if (cat === "Money transfer" && det === "E-wallet topup" && dt.getDate() >= 3)
+  ccFrom3rd += amt;</code></pre>
+
+<h3>7.3 Salary Breakup</h3>
+<table>
+<tr><th>Slice</th><th>Color</th><th>Calculation</th></tr>
+<tr><td><span class="badge b-purple">Investment</span></td><td>Purple</td><td>Sum of all "Investment" transfers</td></tr>
+<tr><td><span class="badge b-red">Expenses</span></td><td>Red</td><td>Sum of all Expense type entries</td></tr>
+<tr><td><span class="badge b-orange">CC Bill Paid</span></td><td>Amber</td><td>Sum of all Credit card bill payments (deducted from HDFC/salary account)</td></tr>
+<tr><td><span class="badge b-green">Available</span></td><td>Green</td><td>Salary − Expenses − Investment − CC Bills Paid</td></tr>
+</table>
+
+<!-- ═══ SECTION 8 ═══ -->
+<h2 id="s8">8. Summary Tab — Charts & Visualizations</h2>
+
+<h3>8.1 Libraries</h3>
+<p>Chart.js 4.4.1 + chartjs-plugin-datalabels 2.2.0 (both via CDN).</p>
+
+<h3>8.2 Chart Order & Specs</h3>
+<table>
+<tr><th>#</th><th>Chart</th><th>Type</th><th>Data Source</th></tr>
+<tr><td>1</td><td>Expenses by Category</td><td>Horizontal bar</td><td>8 expense categories totaled</td></tr>
+<tr><td>2</td><td>Payment Mode Split</td><td>Doughnut</td><td>UPI, Card, Cash, Wallet totals</td></tr>
+<tr><td>3</td><td>Salary Breakup</td><td>Pie</td><td>Investment, Expenses, CC Bill Paid, Available</td></tr>
+</table>
+
+<h3>8.3 Dynamic Bar Label Positioning</h3>
+<p>Bars ≥60% of the maximum value show <strong>white text inside</strong>. Smaller bars show <strong>dark text outside</strong>. This prevents the largest bar's value from being pushed off-screen.</p>
+<pre><code>align: function(ctx) {
+  var max = Math.max.apply(null, ctx.dataset.data);
+  return ctx.dataset.data[ctx.dataIndex] >= max * 0.6 ? 'start' : 'right';
+},
+color: function(ctx) {
+  var max = Math.max.apply(null, ctx.dataset.data);
+  return ctx.dataset.data[ctx.dataIndex] >= max * 0.6 ? '#ffffff' : '#334155';
+}</code></pre>
+
+<h3>8.4 Indian Number Formatting</h3>
+<pre><code>function fmt(n) {
+  return '₹' + Number(n).toLocaleString('en-IN');
+}
+function fmtK(n) {
+  return n >= 100000 ? '₹' + (n/100000).toFixed(1) + 'L'
+       : n >= 1000   ? '₹' + (n/1000).toFixed(1) + 'K'
+       : fmt(n);
+}</code></pre>
+
+<!-- ═══ SECTION 9 ═══ -->
+<h2 id="s9">9. Daily Tab</h2>
+
+<h3>9.1 Color-Coded Entries</h3>
+<table>
+<tr><th>Color</th><th>Type</th><th>Amount Prefix</th></tr>
+<tr><td style="border-left:4px solid #ef4444">Red</td><td>Expense</td><td>Minus sign (−)</td></tr>
+<tr><td style="border-left:4px solid #22c55e">Green</td><td>Money transfer</td><td>None</td></tr>
+<tr><td style="border-left:4px solid #a855f7">Purple</td><td>CC bill payment</td><td>None</td></tr>
+<tr><td style="border-left:4px solid #3b82f6">Blue</td><td>Opening balance</td><td>None</td></tr>
+</table>
+
+<h3>9.2 Display</h3>
+<ul>
+<li>Latest entries shown first (reverse chronological)</li>
+<li>Each row shows: category name, subcategory + payment mode, amount</li>
+<li>Footer totals only Expense-type entries</li>
+</ul>
+
+<!-- ═══ SECTION 10 ═══ -->
+<h2 id="s10">10. CSS & Responsive Design</h2>
+
+<h3>10.1 Glassmorphism</h3>
+<pre><code>.card {
+  background: rgba(255,255,255,.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 20px rgba(0,0,0,.05),
+              inset 0 0 0 1px rgba(230,230,240,.7);
+}</code></pre>
+
+<h3>10.2 Button Color System</h3>
+<table>
+<tr><th>Element</th><th>Active Color</th><th>CSS</th></tr>
+<tr><td>Transaction type</td><td style="background:rgba(22,163,74,.88);color:#fff;text-align:center">Dark green</td><td><code>rgba(22,163,74,.88)</code></td></tr>
+<tr><td>Payment mode</td><td style="background:rgba(34,197,94,.82);color:#fff;text-align:center">Light green</td><td><code>rgba(34,197,94,.82)</code></td></tr>
+<tr><td>Category</td><td style="background:rgba(234,88,12,.82);color:#fff;text-align:center">Orange</td><td><code>rgba(234,88,12,.82)</code></td></tr>
+<tr><td>Details</td><td style="background:rgba(100,116,139,.78);color:#fff;text-align:center">Warm grey</td><td><code>rgba(100,116,139,.78)</code></td></tr>
+<tr><td>CC cards</td><td style="background:rgba(234,88,12,.82);color:#fff;text-align:center">Orange</td><td><code>rgba(234,88,12,.82)</code></td></tr>
+</table>
+
+<h3>10.3 Full-Height Layout</h3>
+<pre><code>body { min-height: 100dvh; }
+.wrap { min-height: 100dvh; display: flex; flex-direction: column; }
+.card { flex: 1; }</code></pre>
+
+<h3>10.4 Detail Buttons — Flexbox Centering</h3>
+<pre><code>dg.style.display = 'flex';
+dg.style.flexWrap = 'wrap';
+dg.style.justifyContent = 'center';  // Centers last row
+dg.style.gap = '4px';
+b.style.width = 'calc(33.33% - 3px)'; // 3 per row</code></pre>
+
+<!-- ═══ SECTION 11 ═══ -->
+<h2 id="s11">11. PWA Configuration</h2>
+
+<h3>11.1 Service Worker Strategy</h3>
+<p>Cache-first with network fallback. Cached: app files + Chart.js CDN + datalabels plugin.</p>
+<pre><code>const urlsToCache = [
+  "./", "./index.html", "./app.js", "./manifest.json",
+  "./icons/icon-192.png", "./icons/icon-512.png",
+  "https://cdnjs.cloudflare.com/.../chart.umd.min.js",
+  "https://cdnjs.cloudflare.com/.../chartjs-plugin-datalabels.min.js"
+];</code></pre>
+
+<h3>11.2 Manifest</h3>
+<pre><code>{
+  "name": "Daily Expense Tracker",
+  "short_name": "ExpenseApp",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait"
+}</code></pre>
+
+<!-- ═══ SECTION 12 ═══ -->
+<h2 id="s12">12. Google Apps Script Backend</h2>
+
+<h3>12.1 doPost() — Write (Existing, Unchanged)</h3>
+<p>Receives 7 fields via URLSearchParams: <code>authToken, transactionType, amount, expenseMode, category, categoryValue, additionalInfo</code>. Maps category to column index, appends row.</p>
+
+<h3>12.2 doGet() — Read (New)</h3>
+<p>Two actions supported:</p>
+<table>
+<tr><th>Action</th><th>Parameters</th><th>Returns</th></tr>
+<tr><td><code>daily</code></td><td><code>date=YYYY-MM-DD</code></td><td>All rows matching that date</td></tr>
+<tr><td><code>monthdata</code></td><td><code>month=N&year=YYYY</code></td><td>All rows for that month</td></tr>
+</table>
+
+<h3>12.3 Row Mapper (_mr)</h3>
+<p>Scans columns E–N (index 4–13), finds the first non-empty cell, uses its column header as <code>category</code> and cell value as <code>categoryValue</code>.</p>
+
+<h3>12.4 Deployment</h3>
+<ul>
+<li>Execute as: Me</li>
+<li>Who has access: <strong>Anyone</strong> (required for cross-origin fetch)</li>
+<li>Each code change needs a <strong>New version</strong> deployment</li>
+</ul>
+
+<!-- ═══ SECTION 13 ═══ -->
+<h2 id="s13">13. Debugging Log — 8 Bugs Found & Fixed</h2>
+
+<div class="bug-box"><strong>Bug 1: Opening Balance Overwrite</strong><br/>Multiple Cash entries (₹2K + ₹5K + ₹500) showed as ₹500. Used <code>= amt</code> instead of <code>+= amt</code>.</div>
+<div class="fix-box"><strong>Fix:</strong> Changed all opening balance assignments to accumulate: <code>bal.Cash += amt</code></div>
+
+<div class="bug-box"><strong>Bug 2: transactionType vs category Mismatch</strong><br/>Sheet stores "Money transfer" for both transfers AND opening balances. Code checked <code>type === "Opening balance"</code> which never matched.</div>
+<div class="fix-box"><strong>Fix:</strong> Changed to <code>cat === "Opening balance"</code> — uses the category field from doGet() reverse mapping.</div>
+
+<div class="bug-box"><strong>Bug 3: UPI Mode Persisting for Transfers</strong><br/>Opening balance entries showed "UPI" as payment mode because auto-select remained in state.</div>
+<div class="fix-box"><strong>Fix:</strong> Clear <code>S.mode</code> and remove button highlight when switching away from Expense type.</div>
+
+<div class="bug-box"><strong>Bug 4: Frozen UI After Update</strong><br/>No buttons clickable. Second <code>rows.forEach</code> in calcSummary referenced <code>cat</code> variable not defined in that scope.</div>
+<div class="fix-box"><strong>Fix:</strong> Added <code>const cat = r.category || ''</code> to the second loop.</div>
+
+<div class="bug-box"><strong>Bug 5: Bar Chart Value Hidden</strong><br/>Largest bar pushed its value label off-screen.</div>
+<div class="fix-box"><strong>Fix:</strong> Dynamic positioning — bars ≥60% of max show white text inside, others show dark text outside.</div>
+
+<div class="bug-box"><strong>Bug 6: "Electronics" Text Wrapping</strong><br/>5 buttons per row caused long words to wrap onto 2 lines.</div>
+<div class="fix-box"><strong>Fix:</strong> Changed all detail rows to 3 per row for consistency.</div>
+
+<div class="bug-box"><strong>Bug 7: Salary to Kotak/ICICI Not Deducting HDFC</strong><br/>HDFC balance too high — transfers out weren't deducting from source.</div>
+<div class="fix-box"><strong>Fix:</strong> Added <code>bal.HDFC -= amt</code> for both Salary to Kotak and Salary to ICICI.</div>
+
+<div class="bug-box"><strong>Bug 8: Smart Quotes in Apps Script</strong><br/>Copying code from AI artifact converted straight quotes to curly quotes, causing syntax errors.</div>
+<div class="fix-box"><strong>Fix:</strong> Paste into Notepad first, or manually retype quotes in the script editor.</div>
+
+<!-- ═══ SECTION 14 ═══ -->
+<h2 id="s14">14. UI Evolution Timeline</h2>
+
+<div class="timeline">
+<div class="step"><strong>V1 — Original App</strong><p>Dropdowns for category and subcategory. Functional but slow.</p></div>
+<div class="step"><strong>V2.0 — Buttons Replace Dropdowns</strong><p>All inputs converted to tap buttons. Core UX improvement.</p></div>
+<div class="step"><strong>V2.1 — Amount Field Repositioned</strong><p>Moved below Details for logical top-down flow.</p></div>
+<div class="step"><strong>V2.2 — CC Bill Card Buttons</strong><p>6 credit card name buttons replace text input for CC bill entries.</p></div>
+<div class="step"><strong>V2.3 — Glassmorphism Styling</strong><p>Frosted-glass card, translucent buttons, gradient submit.</p></div>
+<div class="step"><strong>V2.4 — Color-Coded Button States</strong><p>Green for type/mode, orange for category, grey for details.</p></div>
+<div class="step"><strong>V2.5 — 3 Per Row Details</strong><p>All detail buttons standardized to 3 per row to prevent text wrapping.</p></div>
+<div class="step"><strong>V2.6 — Center-Aligned Remainder</strong><p>Flexbox centering for last row with fewer items.</p></div>
+<div class="step"><strong>V2.7 — Smart Defaults</strong><p>Auto-select first category + first detail + UPI on Expense tap.</p></div>
+<div class="step"><strong>V2.8 — Font Sizes Increased</strong><p>Better readability at 100% mobile zoom.</p></div>
+<div class="step"><strong>V2.9 — Full Viewport Height</strong><p>Card stretches to fill screen, no wasted space.</p></div>
+<div class="step"><strong>V2.10 — Dynamic Chart Labels</strong><p>White text inside large bars, dark text outside small bars.</p></div>
+</div>
+
+<!-- ═══ SECTION 15 ═══ -->
+<h2 id="s15">15. Security & Performance</h2>
+
+<h3>15.1 Security</h3>
+<ul>
+<li>Simple shared token (<code>*****</code>) — suitable for personal use only</li>
+<li>No sensitive financial data (account numbers, passwords) stored</li>
+<li>Auth token visible in frontend JS — acceptable for single-user app</li>
+<li>Apps Script set to "Anyone" for API access; actual sheet requires Google account</li>
+</ul>
+
+<h3>15.2 Performance</h3>
+<ul>
+<li>doGet() reads entire sheet and filters — works fine for ~2 years of data</li>
+<li>Future optimization: server-side filtering, pagination, or caching summaries</li>
+<li>Chart.js loaded from CDN and cached by service worker</li>
+<li>All CSS is inline — no render-blocking external stylesheets</li>
+</ul>
+
+<!-- ═══ SECTION 16 ═══ -->
+<h2 id="s16">16. Inputs for Future AI Models</h2>
+
+<div class="highlight">
+<strong>Critical context for any AI continuing work on this project:</strong>
+</div>
+
+<ol>
+<li><strong>String exactness matters.</strong> "Kotak Balance" has capital B. "Other income" has lowercase i. Every value must match Google Sheet SUMIF formulas.</li>
+<li><strong>transactionType ≠ category.</strong> Sheet column C stores "Money transfer" for both transfers and opening balances. Always check the <code>category</code> field to distinguish.</li>
+<li><strong>Opening balances accumulate.</strong> Multiple entries per account must ADD (<code>+=</code>), not overwrite (<code>=</code>).</li>
+<li><strong>Payment mode scope.</strong> <code>expenseMode</code> only applies to Expense type. Must be empty for Transfer and CC Bill.</li>
+<li><strong>Column structure is frozen.</strong> Columns A–O cannot change. Dashboard has SUMIF formulas on column headers.</li>
+<li><strong>Google Apps Script quirks.</strong> Smart quotes from web break syntax. Use <code>var</code> for compatibility. New deployment version required for each change.</li>
+<li><strong>CC bill cycle is 3rd to 3rd.</strong> Includes both Credit card mode expenses AND E-wallet topup transfers.</li>
+<li><strong>HDFC is the hub.</strong> Salary lands in HDFC, then distributes. All CC bills, cash withdrawals, and bank transfers deduct from HDFC.</li>
+<li><strong>Salary breakup includes CC bills.</strong> The pie chart has 4 slices: Investment, Expenses, CC Bill Paid, Available. Available = Salary − Expenses − Investment − CC Bills. CC bills are paid from HDFC (salary account) so they are part of the salary utilization.</li>
+<li><strong>Local demo store removed.</strong> Daily and Summary tabs are now pure API-only. They require the <code>doGet()</code> backend to function.</li>
+<li><strong>Chart.js datalabels.</strong> Must register globally: <code>Chart.register(ChartDataLabels)</code>. Dynamic positioning via callback functions.</li>
+</ol>
+
+<h3>Testing Checklist</h3>
+<ul class="checklist">
+<li>Submit an Expense with UPI — verify correct column gets subcategory value</li>
+<li>Submit a Transfer — verify expenseMode is empty in sheet</li>
+<li>Submit a CC Bill — verify additionalInfo has the card name</li>
+<li>Check Daily tab — entries appear with correct colors</li>
+<li>Check Summary tab — balances match manual calculation</li>
+<li>Switch between Expense/Transfer/CC Bill — no stale state carried over</li>
+<li>Clear button resets everything including mode highlights</li>
+<li>Enter key on amount field triggers submit</li>
+<li>Opening balance with multiple entries — verify they add up</li>
+</ul>
+
+<h3>Known Limitations</h3>
+<ol>
+<li>No edit or delete for submitted entries</li>
+<li>No multi-month trend analysis</li>
+<li>No budget setting or alerts</li>
+<li>Auth token is plaintext in frontend</li>
+<li>Full sheet scan on every doGet() — no indexing</li>
+<li>Service worker may cache stale JS — users need hard refresh</li>
+<li>No data export from PWA</li>
+</ol>
+
+<!-- ═══ SECTION 17 ═══ -->
+<h2 id="s17">17. Repository & Deployment</h2>
+
+<table>
+<tr><td><strong>Repository</strong></td><td>github.com/rakeshshewale/pwa2-records-dll-x26_AI</td></tr>
+<tr><td><strong>Hosting</strong></td><td>GitHub Pages (main branch, root folder)</td></tr>
+<tr><td><strong>Live URL</strong></td><td>https://rakeshshewale.github.io/pwa2-records-dll-x26_AI/</td></tr>
+<tr><td><strong>Files</strong></td><td>6 files (index.html, app.js, service-worker.js, manifest.json, 2 icons)</td></tr>
+<tr><td><strong>Dependencies</strong></td><td>Chart.js 4.4.1, chartjs-plugin-datalabels 2.2.0 (CDN)</td></tr>
+<tr><td><strong>Backend</strong></td><td>Google Apps Script (linked to Google Sheet "Form entries")</td></tr>
+<tr><td><strong>Original App</strong></td><td>Running in parallel, separate repo, shared Google Sheet</td></tr>
+</table>
+
+<hr/>
+
+<!-- ═══ SECTION 18 ═══ -->
+<h2 id="s18">18. UI Mockups — All 3 Tabs</h2>
+<p>Below are accurate HTML mockups representing the final UI of each tab as rendered on a mobile device.</p>
+
+<h3>18.1 Entry Tab — Expense Mode</h3>
+<div style="max-width:360px;margin:16px auto;background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.08);padding:20px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="text-align:center;font-size:18px;font-weight:900;color:#4f46e5;margin-bottom:12px">Daily Expense Tracker</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#f1f5f9;border-radius:8px;padding:3px;margin-bottom:14px">
+    <div style="padding:7px;background:#fff;border-radius:6px;font-size:11px;font-weight:700;color:#334155;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)">ENTRY</div>
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">DAILY</div>
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">SUMMARY</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Type</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:12px">
+    <div style="padding:8px;border-radius:6px;background:rgba(22,163,74,.88);color:#fff;font-weight:700;font-size:12px;text-align:center">Expense</div>
+    <div style="padding:8px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:12px;text-align:center;color:#64748b">Transfer</div>
+    <div style="padding:8px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:12px;text-align:center;color:#64748b">CC Bill</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Payment Mode</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:12px">
+    <div style="padding:6px;border-radius:6px;background:rgba(34,197,94,.82);color:#fff;font-weight:700;font-size:9px;text-align:center;text-transform:uppercase">UPI</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Card</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Wallet</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Cash</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Category</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:12px">
+    <div style="padding:6px;border-radius:6px;background:rgba(234,88,12,.82);color:#fff;font-weight:700;font-size:9px;text-align:center;text-transform:uppercase">Food</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Shopping</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Transport</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Bills</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Entertain</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Personal</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Insurance</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase">Other Exp</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Details</div>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-bottom:12px">
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;background:rgba(100,116,139,.78);color:#fff;font-weight:600;font-size:10px;text-align:center">Dining</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:10px;text-align:center;color:#64748b">Snacks</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:10px;text-align:center;color:#64748b">Delivery</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:10px;text-align:center;color:#64748b">Groceries</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:10px;text-align:center;color:#64748b">Fruit</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Amount</div>
+  <div style="position:relative;margin-bottom:12px">
+    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:17px;font-weight:700;color:#a5b4fc">₹</span>
+    <div style="width:100%;padding:10px 12px 10px 32px;background:rgba(248,250,252,.6);border:1px solid #e2e8f0;border-radius:8px;font-size:18px;font-weight:700;color:#cbd5e1">0.00</div>
+  </div>
+  <div style="padding:8px 12px;background:rgba(248,250,252,.4);border:1px solid #e2e8f0;border-radius:7px;font-size:12px;color:#cbd5e1;margin-bottom:12px">Add a note (optional)...</div>
+  <div style="display:grid;grid-template-columns:1fr auto;gap:6px">
+    <div style="padding:13px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-weight:700;font-size:13px;border-radius:8px;text-align:center">Submit Entry</div>
+    <div style="padding:13px 16px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;font-weight:700;font-size:11px;color:#94a3b8;text-transform:uppercase">Clear</div>
+  </div>
+</div>
+
+<h3>18.2 Entry Tab — Transfer Mode</h3>
+<div style="max-width:360px;margin:16px auto;background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.08);padding:20px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="text-align:center;font-size:18px;font-weight:900;color:#4f46e5;margin-bottom:12px">Daily Expense Tracker</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#f1f5f9;border-radius:8px;padding:3px;margin-bottom:14px">
+    <div style="padding:7px;background:#fff;border-radius:6px;font-size:11px;font-weight:700;color:#334155;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)">ENTRY</div>
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">DAILY</div>
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">SUMMARY</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Type</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:12px">
+    <div style="padding:8px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:12px;text-align:center;color:#64748b">Expense</div>
+    <div style="padding:8px;border-radius:6px;background:rgba(22,163,74,.88);color:#fff;font-weight:700;font-size:12px;text-align:center">Transfer</div>
+    <div style="padding:8px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:12px;text-align:center;color:#64748b">CC Bill</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Category</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:12px">
+    <div style="padding:6px;border-radius:6px;background:rgba(234,88,12,.82);color:#fff;font-weight:700;font-size:9px;text-align:center;text-transform:uppercase;white-space:nowrap">Money transfer</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:9px;text-align:center;color:#64748b;text-transform:uppercase;white-space:nowrap">Opening balance</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Details</div>
+  <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-bottom:12px">
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;background:rgba(100,116,139,.78);color:#fff;font-weight:600;font-size:9px;text-align:center">Salary</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:9px;text-align:center;color:#64748b">Salary→Kotak</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:9px;text-align:center;color:#64748b">Salary→ICICI</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:9px;text-align:center;color:#64748b">ICICI→Kotak</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:9px;text-align:center;color:#64748b">Kotak→ICICI</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:9px;text-align:center;color:#64748b">Cash W/D</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:9px;text-align:center;color:#64748b">Investment</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:9px;text-align:center;color:#64748b">Other Income</div>
+    <div style="width:calc(33.33% - 3px);padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:9px;text-align:center;color:#64748b">Wallet Topup</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Amount</div>
+  <div style="position:relative;margin-bottom:12px">
+    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:17px;font-weight:700;color:#a5b4fc">₹</span>
+    <div style="width:100%;padding:10px 12px 10px 32px;background:rgba(248,250,252,.6);border:1px solid #e2e8f0;border-radius:8px;font-size:18px;font-weight:700;color:#cbd5e1">0.00</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr auto;gap:6px">
+    <div style="padding:13px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-weight:700;font-size:13px;border-radius:8px;text-align:center">Submit Entry</div>
+    <div style="padding:13px 16px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;font-weight:700;font-size:11px;color:#94a3b8;text-transform:uppercase">Clear</div>
+  </div>
+</div>
+
+<h3>18.3 Entry Tab — CC Bill Mode</h3>
+<div style="max-width:360px;margin:16px auto;background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.08);padding:20px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="text-align:center;font-size:18px;font-weight:900;color:#4f46e5;margin-bottom:12px">Daily Expense Tracker</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#f1f5f9;border-radius:8px;padding:3px;margin-bottom:14px">
+    <div style="padding:7px;background:#fff;border-radius:6px;font-size:11px;font-weight:700;color:#334155;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)">ENTRY</div>
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">DAILY</div>
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">SUMMARY</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Type</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:12px">
+    <div style="padding:8px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:12px;text-align:center;color:#64748b">Expense</div>
+    <div style="padding:8px;border-radius:6px;border:1px solid #e8eaed;font-weight:700;font-size:12px;text-align:center;color:#64748b">Transfer</div>
+    <div style="padding:8px;border-radius:6px;background:rgba(22,163,74,.88);color:#fff;font-weight:700;font-size:12px;text-align:center">CC Bill</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Credit Card</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:12px">
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:10px;text-align:center;color:#64748b">Live</div>
+    <div style="padding:6px;border-radius:6px;background:rgba(234,88,12,.82);color:#fff;font-weight:600;font-size:10px;text-align:center">Amex</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:10px;text-align:center;color:#64748b">Sapphiro</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:10px;text-align:center;color:#64748b">Amazon Pay</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:10px;text-align:center;color:#64748b">Ixigo</div>
+    <div style="padding:6px;border-radius:6px;border:1px solid #e8eaed;font-weight:600;font-size:10px;text-align:center;color:#64748b">Diners</div>
+  </div>
+  <div style="font-size:9px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">Amount</div>
+  <div style="position:relative;margin-bottom:12px">
+    <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:17px;font-weight:700;color:#a5b4fc">₹</span>
+    <div style="width:100%;padding:10px 12px 10px 32px;background:rgba(248,250,252,.6);border:1px solid #e2e8f0;border-radius:8px;font-size:18px;font-weight:700;color:#334155">22,820</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr auto;gap:6px">
+    <div style="padding:13px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-weight:700;font-size:13px;border-radius:8px;text-align:center">Submit Entry</div>
+    <div style="padding:13px 16px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:8px;font-weight:700;font-size:11px;color:#94a3b8;text-transform:uppercase">Clear</div>
+  </div>
+</div>
+
+<h3>18.4 Daily Tab</h3>
+<div style="max-width:360px;margin:16px auto;background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.08);padding:20px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="text-align:center;font-size:18px;font-weight:900;color:#4f46e5;margin-bottom:12px">Daily Expense Tracker</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#f1f5f9;border-radius:8px;padding:3px;margin-bottom:14px">
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">ENTRY</div>
+    <div style="padding:7px;background:#fff;border-radius:6px;font-size:11px;font-weight:700;color:#334155;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)">DAILY</div>
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">SUMMARY</div>
+  </div>
+  <div style="padding:8px 10px;background:rgba(248,250,252,.5);border:1px solid #e2e8f0;border-radius:7px;font-size:12px;color:#334155;margin-bottom:8px">2026-03-08</div>
+  <div style="padding:10px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-weight:700;font-size:12px;border-radius:8px;text-align:center;margin-bottom:12px">Load Expenses</div>
+
+  <div style="display:flex;align-items:center;padding:9px 10px;border-radius:7px;margin-bottom:4px;background:rgba(239,68,68,.06);border-left:3px solid #ef4444;gap:8px">
+    <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#334155">Food</div><div style="font-size:9px;color:#94a3b8">Groceries · Credit card</div></div>
+    <div style="font-size:13px;font-weight:800;color:#ef4444">-₹399</div>
+  </div>
+  <div style="display:flex;align-items:center;padding:9px 10px;border-radius:7px;margin-bottom:4px;background:rgba(239,68,68,.06);border-left:3px solid #ef4444;gap:8px">
+    <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#334155">Bills</div><div style="font-size:9px;color:#94a3b8">Phone bills · E-wallet</div></div>
+    <div style="font-size:13px;font-weight:800;color:#ef4444">-₹550</div>
+  </div>
+  <div style="display:flex;align-items:center;padding:9px 10px;border-radius:7px;margin-bottom:4px;background:rgba(239,68,68,.06);border-left:3px solid #ef4444;gap:8px">
+    <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#334155">Transportation</div><div style="font-size:9px;color:#94a3b8">Cab · UPI</div></div>
+    <div style="font-size:13px;font-weight:800;color:#ef4444">-₹840</div>
+  </div>
+  <div style="display:flex;align-items:center;padding:9px 10px;border-radius:7px;margin-bottom:4px;background:rgba(34,197,94,.06);border-left:3px solid #22c55e;gap:8px">
+    <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#334155">Money transfer</div><div style="font-size:9px;color:#94a3b8">E-wallet topup</div></div>
+    <div style="font-size:13px;font-weight:800;color:#22c55e">₹1,500</div>
+  </div>
+  <div style="display:flex;align-items:center;padding:9px 10px;border-radius:7px;margin-bottom:4px;background:rgba(239,68,68,.06);border-left:3px solid #ef4444;gap:8px">
+    <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#334155">Food</div><div style="font-size:9px;color:#94a3b8">Dining out · UPI</div></div>
+    <div style="font-size:13px;font-weight:800;color:#ef4444">-₹80</div>
+  </div>
+  <div style="display:flex;align-items:center;padding:9px 10px;border-radius:7px;margin-bottom:4px;background:rgba(239,68,68,.06);border-left:3px solid #ef4444;gap:8px">
+    <div style="flex:1"><div style="font-size:11px;font-weight:700;color:#334155">Transportation</div><div style="font-size:9px;color:#94a3b8">Cab · UPI</div></div>
+    <div style="font-size:13px;font-weight:800;color:#ef4444">-₹140</div>
+  </div>
+  <div style="display:flex;justify-content:space-between;padding:10px;border-top:2px solid #e2e8f0;margin-top:6px;font-weight:800;font-size:12px;color:#334155">
+    <span>Total Expenses</span><span style="color:#ef4444">-₹3,559</span>
+  </div>
+</div>
+
+<h3>18.5 Summary Tab</h3>
+<div style="max-width:360px;margin:16px auto;background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.08);padding:20px 16px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <div style="text-align:center;font-size:18px;font-weight:900;color:#4f46e5;margin-bottom:12px">Daily Expense Tracker</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:#f1f5f9;border-radius:8px;padding:3px;margin-bottom:14px">
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">ENTRY</div>
+    <div style="padding:7px;font-size:11px;font-weight:700;color:#94a3b8;text-align:center">DAILY</div>
+    <div style="padding:7px;background:#fff;border-radius:6px;font-size:11px;font-weight:700;color:#334155;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06)">SUMMARY</div>
+  </div>
+
+  <div style="display:flex;gap:5px;margin-bottom:8px">
+    <div style="flex:1;padding:8px;background:rgba(248,250,252,.5);border:1px solid #e2e8f0;border-radius:7px;font-size:12px;color:#334155">March</div>
+    <div style="flex:1;padding:8px;background:rgba(248,250,252,.5);border:1px solid #e2e8f0;border-radius:7px;font-size:12px;color:#334155">2026</div>
+  </div>
+  <div style="padding:10px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-weight:700;font-size:12px;border-radius:8px;text-align:center;margin-bottom:12px">Load Summary</div>
+
+  <div style="font-size:9px;font-weight:700;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Account Balances</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:5px">
+    <div style="background:#f8fafc;border:1px solid rgba(148,163,184,.12);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:8px;font-weight:700;color:#94a3b8;text-transform:uppercase">Kotak</div><div style="font-size:15px;font-weight:800;color:#334155;margin-top:2px">₹62,817</div></div>
+    <div style="background:#f8fafc;border:1px solid rgba(148,163,184,.12);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:8px;font-weight:700;color:#94a3b8;text-transform:uppercase">ICICI</div><div style="font-size:15px;font-weight:800;color:#334155;margin-top:2px">₹66,915</div></div>
+    <div style="background:#f8fafc;border:1px solid rgba(148,163,184,.12);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:8px;font-weight:700;color:#94a3b8;text-transform:uppercase">HDFC</div><div style="font-size:15px;font-weight:800;color:#334155;margin-top:2px">₹10,665</div></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:8px">
+    <div style="background:#f8fafc;border:1px solid rgba(148,163,184,.12);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:8px;font-weight:700;color:#94a3b8;text-transform:uppercase">Wallet</div><div style="font-size:15px;font-weight:800;color:#334155;margin-top:2px">₹7,972</div></div>
+    <div style="background:#f8fafc;border:1px solid rgba(148,163,184,.12);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:8px;font-weight:700;color:#94a3b8;text-transform:uppercase">Cash</div><div style="font-size:15px;font-weight:800;color:#334155;margin-top:2px">₹7,800</div></div>
+    <div style="background:#f8fafc;border:1px solid rgba(148,163,184,.12);border-radius:8px;padding:8px 4px;text-align:center"><div style="font-size:8px;font-weight:700;color:#94a3b8;text-transform:uppercase">Total</div><div style="font-size:15px;font-weight:800;color:#334155;margin-top:2px">₹1,56,169</div></div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px">
+    <div style="background:linear-gradient(135deg,rgba(239,68,68,.07),rgba(239,68,68,.03));border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:10px;text-align:center"><div style="font-size:8px;font-weight:700;color:#ef4444;text-transform:uppercase">Total Expenses</div><div style="font-size:17px;font-weight:800;color:#ef4444;margin-top:2px">₹49,685</div></div>
+    <div style="background:linear-gradient(135deg,rgba(239,68,68,.07),rgba(239,68,68,.03));border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:10px;text-align:center"><div style="font-size:8px;font-weight:700;color:#ef4444;text-transform:uppercase">CC Next Bill</div><div style="font-size:17px;font-weight:800;color:#ef4444;margin-top:2px">₹29,719</div></div>
+  </div>
+
+  <div style="font-size:9px;font-weight:700;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;text-align:center">Expenses by Category</div>
+  <div style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;margin-bottom:5px;gap:4px"><span style="font-size:10px;font-weight:600;color:#64748b;min-width:62px">Food</span><div style="flex:1;height:18px;background:#f1f5f9;border-radius:4px;overflow:hidden"><div style="width:8%;height:100%;background:#6366f1;border-radius:4px"></div></div><span style="font-size:10px;font-weight:700;min-width:45px;text-align:right">₹2.4K</span></div>
+    <div style="display:flex;align-items:center;margin-bottom:5px;gap:4px"><span style="font-size:10px;font-weight:600;color:#64748b;min-width:62px">Shopping</span><div style="flex:1;height:18px;background:#f1f5f9;border-radius:4px;overflow:hidden"><div style="width:58%;height:100%;background:#22c55e;border-radius:4px;position:relative"><span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:700;color:#fff">₹17.4K</span></div></div></div>
+    <div style="display:flex;align-items:center;margin-bottom:5px;gap:4px"><span style="font-size:10px;font-weight:600;color:#64748b;min-width:62px">Transport</span><div style="flex:1;height:18px;background:#f1f5f9;border-radius:4px;overflow:hidden"><div style="width:4%;height:100%;background:#f59e0b;border-radius:4px"></div></div><span style="font-size:10px;font-weight:700;min-width:45px;text-align:right">₹1.2K</span></div>
+    <div style="display:flex;align-items:center;margin-bottom:5px;gap:4px"><span style="font-size:10px;font-weight:600;color:#64748b;min-width:62px">Bills</span><div style="flex:1;height:18px;background:#f1f5f9;border-radius:4px;overflow:hidden"><div style="width:100%;height:100%;background:#ef4444;border-radius:4px;position:relative"><span style="position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:700;color:#fff">₹29.1K</span></div></div></div>
+  </div>
+
+  <div style="font-size:9px;font-weight:700;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;text-align:center">Payment Mode Split</div>
+  <div style="display:flex;justify-content:center;gap:4px;margin-bottom:6px">
+    <div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(#6366f1 0% 56%, #f59e0b 56% 93%, #22c55e 93% 96%, #06b6d4 96% 100%)"></div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:9px;color:#64748b;margin-bottom:14px">
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#6366f1;margin-right:3px"></span>UPI ₹27.8K</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#f59e0b;margin-right:3px"></span>Card ₹18.2K</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#22c55e;margin-right:3px"></span>Wallet ₹1.5K</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#06b6d4;margin-right:3px"></span>Cash ₹2.2K</span>
+  </div>
+
+  <div style="font-size:9px;font-weight:700;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;text-align:center">Salary Breakup</div>
+  <div style="display:flex;justify-content:center;gap:4px;margin-bottom:6px">
+    <div style="width:80px;height:80px;border-radius:50%;background:conic-gradient(#8b5cf6 0% 14%, #ef4444 14% 48%, #f59e0b 48% 63%, #22c55e 63% 100%)"></div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:9px;color:#64748b;margin-bottom:8px">
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#8b5cf6;margin-right:3px"></span>Invest ₹20.8K</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#ef4444;margin-right:3px"></span>Expense ₹49.7K</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#f59e0b;margin-right:3px"></span>CC Bill ₹91.3K</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:#22c55e;margin-right:3px"></span>Available -₹16.6K</span>
+  </div>
+</div>
+
+<hr/>
+<p style="text-align:center;color:#94a3b8;font-size:12px;margin-top:20px"><em>Document generated through human-AI collaborative development, March 2026.</em></p>
+
+</body>
+</html>
