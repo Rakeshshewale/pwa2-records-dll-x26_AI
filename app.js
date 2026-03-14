@@ -249,17 +249,6 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
   try {
     fetch(API, { method: "POST", body }).catch(() => {});
 
-    const entry = {
-      transactionType: S.type,
-      amount: amt,
-      expenseMode: S.type === "Credit card bill" ? "" : S.mode,
-      category: S.cat,
-      categoryValue: S.type === "Credit card bill" ? S.cc : S.det,
-      additionalInfo: S.type === "Credit card bill" ? S.cc : document.getElementById('noteInput').value,
-      date: new Date().toISOString().split('T')[0]
-    };
-    localEntries.push(entry);
-
     resetForm();
     document.getElementById('saveMsg').innerHTML = '<div class="ok" style="margin-top:6px">Saved ✅</div>';
     setTimeout(() => { document.getElementById('saveMsg').innerHTML = ''; }, 1400);
@@ -283,32 +272,18 @@ document.getElementById('fetchDaily').addEventListener('click', async () => {
   const cont = document.getElementById('dailyContent');
   sp.classList.add('show'); cont.innerHTML = '';
 
-  const getLocalDaily = () => localEntries.filter(e => e.date === dt).map(mapLocal);
-
   try {
     const r = await fetch(API + '?action=daily&date=' + encodeURIComponent(dt) + '&authToken=Rakesh9869', {redirect: "follow"});
     const d = await r.json();
     const apiRows = (d.data && d.data.length) ? d.data : [];
-    const localRows = getLocalDaily();
-    const allRows = [...apiRows, ...localRows];
-    if (!allRows.length) { cont.innerHTML = '<div class="empty-st">No entries for this date</div>'; return; }
-    renderDaily(allRows);
+    if (!apiRows.length) { cont.innerHTML = '<div class="empty-st">No entries for this date</div>'; return; }
+    renderDaily(apiRows);
   } catch (err) {
-    const localRows = getLocalDaily();
-    if (localRows.length) { renderDaily(localRows); }
-    else { cont.innerHTML = '<div class="empty-st">No entries for this date</div>'; }
+    cont.innerHTML = '<div class="empty-st">Failed to load. Check connection.</div>';
   } finally {
     sp.classList.remove('show');
   }
 });
-
-function mapLocal(e) {
-  return {
-    type: e.transactionType, mode: e.expenseMode, category: e.category,
-    detail: e.categoryValue, amount: e.amount, transactionType: e.transactionType,
-    expenseMode: e.expenseMode, categoryValue: e.categoryValue, date: e.date
-  };
-}
 
 function renderDaily(rows) {
   const cont = document.getElementById('dailyContent');
@@ -405,7 +380,7 @@ function calcSummary(rows) {
     if (cat === "Money transfer" && det === "E-wallet topup" && dt) { if (dt.getDate() >= 3) ccFrom3rd += amt; }
   });
 
-  const available = totalSalary - totalExpense - totalInvest;
+  const available = totalSalary - totalExpense - totalInvest - totalCC;
   return { bal, totalExpense, totalTransfer, totalCC, totalSalary, totalInvest, available, catTotals, modeTotals, ccFrom3rd };
 }
 
@@ -431,7 +406,7 @@ function renderSummary(d) {
   </div>
   <div class="red-row">
     <div class="red-box"><div class="red-label">Total Expenses</div><div class="red-val">${fmt(d.totalExpense)}</div></div>
-    <div class="red-box"><div class="red-label">CC Next Bill (3rd–3rd)</div><div class="red-val">${fmt(d.ccFrom3rd)}</div></div>
+    <div class="red-box"><div class="red-label">CC Next Bill</div><div class="red-val">${fmt(d.ccFrom3rd)}</div></div>
   </div>
   <div class="chart-wrap"><div class="chart-title">Expenses by Category</div><canvas id="chCat"></canvas></div>
   <div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><canvas id="chMode"></canvas></div>
@@ -478,10 +453,10 @@ function renderSummary(d) {
 
   /* Pie: Salary Breakup */
   if (d.totalSalary > 0) {
-    const salData = [d.totalInvest, d.totalExpense, Math.max(0, d.available)];
+    const salData = [d.totalInvest, d.totalExpense, d.totalCC, Math.max(0, d.available)];
     charts.push(new Chart(document.getElementById('chSalary'), {
       type: 'pie',
-      data: { labels: ['Investment','Expenses','Available'], datasets: [{ data: salData, backgroundColor: ['#8b5cf6','#ef4444','#22c55e'], borderWidth: 0, hoverOffset: 6 }] },
+      data: { labels: ['Investment','Expenses','CC Bill Paid','Available'], datasets: [{ data: salData, backgroundColor: ['#8b5cf6','#ef4444','#f59e0b','#22c55e'], borderWidth: 0, hoverOffset: 6 }] },
       options: { responsive: true, plugins: {
         legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8, usePointStyle: true, pointStyleWidth: 8 } },
         datalabels: { color: '#fff', font: { weight: 'bold', size: 10 }, formatter: v => fmtK(v) },
@@ -499,25 +474,15 @@ document.getElementById('fetchSummary').addEventListener('click', async () => {
   const cont = document.getElementById('sumContent');
   sp.classList.add('show'); cont.innerHTML = '';
 
-  const mo = parseInt(m), yr = parseInt(y);
-  const getLocal = () => localEntries.filter(e => {
-    const dd = new Date(e.date);
-    return (dd.getMonth() + 1) === mo && dd.getFullYear() === yr;
-  }).map(mapLocal);
-
   try {
     const r = await fetch(API + '?action=monthdata&month=' + m + '&year=' + y + '&authToken=Rakesh9869', {redirect: "follow"});
     const d = await r.json();
     const apiRows = (d.data && d.data.length) ? d.data : [];
-    const localRows = getLocal();
-    const allRows = [...apiRows, ...localRows];
-    if (!allRows.length) { cont.innerHTML = '<div class="empty-st">No data for this period</div>'; sp.classList.remove('show'); return; }
-    renderSummary(calcSummary(allRows));
+    if (!apiRows.length) { cont.innerHTML = '<div class="empty-st">No data for this period</div>'; sp.classList.remove('show'); return; }
+    renderSummary(calcSummary(apiRows));
   } catch (err) {
     console.error('Summary error:', err);
-    const localRows = getLocal();
-    if (localRows.length) { renderSummary(calcSummary(localRows)); }
-    else { cont.innerHTML = '<div class="empty-st">Error: ' + err.message + '</div>'; }
+    cont.innerHTML = '<div class="empty-st">Failed to load. Check connection.</div>';
   } finally {
     sp.classList.remove('show');
   }
