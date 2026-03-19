@@ -7,7 +7,7 @@ Chart.register(ChartDataLabels);
 
 const API = "https://script.google.com/macros/s/AKfycbx_wHyePe_GKAA9YBmpccIyPkYrKikyfosaWmhVJxZH1_MActOeD0IETvVIhnu2g_-O/exec";
 
-/* ══ EXACT backend values → Google Sheet columns E–N ══ */
+/* ══ EXACT backend values → Google Sheet columns E-N ══ */
 const CATS = {
   "Food":           ["Dining out","Snacks","Food deliveries","Groceries","Fruit"],
   "Shopping":       ["Shopping mart","Amazon","Electronics","Clothing","Other"],
@@ -21,7 +21,7 @@ const CATS = {
   "Opening balance":["HDFC balance","ICICI balance","Kotak Balance","E-wallet balance","Cash"]
 };
 
-/* ══ Short display labels for buttons ══ */
+/* ══ Short display labels ══ */
 const CAT_SHORT = {
   "Food":"Food","Shopping":"Shopping","Transportation":"Transport","Bills":"Bills",
   "Entertainment":"Entertain","Personal care":"Personal","Insurance":"Insurance","Other Expenses":"Other Exp",
@@ -37,14 +37,14 @@ const DET_SHORT = {
   "Medical":"Medical","Hair saloon spa":"Saloon","Cosmetics":"Cosmetics","Dr appointments":"Doctor",
   "LIC":"LIC","Health Insurance":"Health Ins","Term Insurance":"Term Ins",
   "Laundry":"Laundry","Splitwise pay":"Splitwise","Career":"Career","Vacation":"Vacation",
-  "Salary to Kotak":"Salary→Kotak","Salary to ICICI":"Salary→ICICI","ICICI to Kotak":"ICICI→Kotak","Kotak to ICICI":"Kotak→ICICI",
+  "Salary to Kotak":"Salary\u2192Kotak","Salary to ICICI":"Salary\u2192ICICI","ICICI to Kotak":"ICICI\u2192Kotak","Kotak to ICICI":"Kotak\u2192ICICI",
   "Cash withdrawal":"Cash W/D","Salary":"Salary","Investment":"Investment","Other income":"Other Income","E-wallet topup":"Wallet Topup",
   "HDFC balance":"HDFC","ICICI balance":"ICICI","Kotak Balance":"Kotak","E-wallet balance":"Wallet","Cash":"Cash"
 };
 
 const DET_COLS = {
-  "Food":5,"Shopping":4,"Transportation":5,"Bills":5,
-  "Entertainment":5,"Personal care":5,"Insurance":3,"Other Expenses":5,
+  "Food":3,"Shopping":3,"Transportation":3,"Bills":3,
+  "Entertainment":3,"Personal care":3,"Insurance":3,"Other Expenses":3,
   "Money transfer":3,"Opening balance":3
 };
 
@@ -52,7 +52,6 @@ const EXP_CATS = ["Food","Shopping","Transportation","Bills","Entertainment","Pe
 const TRN_CATS = ["Money transfer","Opening balance"];
 
 let S = { type:"", mode:"", cat:"", det:"", cc:"" };
-let localEntries = [];
 
 
 /* ═══════════════════════════════════════
@@ -74,8 +73,8 @@ document.querySelectorAll('.tab').forEach(t => {
 function clrGroup(el, cls) { el.querySelectorAll('button').forEach(b => { cls.forEach(c => b.classList.remove(c)); }); }
 function activate(el, btn, cls) { clrGroup(el, ['btn-type','btn-mode','btn-cat','btn-detx','btn-ccx']); btn.classList.add(cls); }
 function shake(id) { const e = document.getElementById(id); e.style.animation = 'shake .4s'; setTimeout(() => e.style.animation = '', 400); }
-function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN', { minimumFractionDigits:0, maximumFractionDigits:0 }); }
-function fmtK(n) { return n >= 100000 ? '₹' + (n/100000).toFixed(1) + 'L' : n >= 1000 ? '₹' + (n/1000).toFixed(1) + 'K' : fmt(n); }
+function fmt(n) { return '\u20b9' + Number(n).toLocaleString('en-IN', { minimumFractionDigits:0, maximumFractionDigits:0 }); }
+function fmtK(n) { return n >= 100000 ? '\u20b9' + (n/100000).toFixed(1) + 'L' : n >= 1000 ? '\u20b9' + (n/1000).toFixed(1) + 'K' : fmt(n); }
 
 
 /* ═══════════════════════════════════════
@@ -173,7 +172,8 @@ function buildDet(cat) {
   const dg = document.getElementById('detGrid');
   dg.innerHTML = '';
   const items = CATS[cat] || [];
-  const cols = DET_COLS[cat] || Math.min(items.length, 5);
+  const cols = DET_COLS[cat] || 3;
+
   dg.style.gridTemplateColumns = '';
   dg.style.display = 'flex';
   dg.style.flexWrap = 'wrap';
@@ -250,7 +250,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     fetch(API, { method: "POST", body }).catch(() => {});
 
     resetForm();
-    document.getElementById('saveMsg').innerHTML = '<div class="ok" style="margin-top:6px">Saved ✅</div>';
+    document.getElementById('saveMsg').innerHTML = '<div class="ok" style="margin-top:6px">Saved \u2705</div>';
     setTimeout(() => { document.getElementById('saveMsg').innerHTML = ''; }, 1400);
   } catch (err) {
     alert("Connection Error.");
@@ -304,12 +304,12 @@ function renderDaily(rows) {
     if (type === 'Expense') total += amt;
 
     const label = type === 'Credit card bill' ? (det || 'CC Bill') : cat;
-    const sub = type === 'Credit card bill' ? 'CC Bill Payment' : cat === 'Opening balance' ? det : (det + (mode ? ' · ' + mode : ''));
+    const sub = type === 'Credit card bill' ? 'CC Bill Payment' : cat === 'Opening balance' ? det : (det + (mode ? ' \u00b7 ' + mode : ''));
 
-    html += `<div class="d-entry ${cls}"><div class="d-info"><div class="d-cat">${label}</div><div class="d-sub">${sub}</div></div><div class="d-amt ${amtCls}">${type === 'Expense' ? '-' : ''}${fmt(amt)}</div></div>`;
+    html += '<div class="d-entry ' + cls + '"><div class="d-info"><div class="d-cat">' + label + '</div><div class="d-sub">' + sub + '</div></div><div class="d-amt ' + amtCls + '">' + (type === 'Expense' ? '-' : '') + fmt(amt) + '</div></div>';
   });
 
-  html += `<div class="d-total"><span>Total Expenses</span><span style="color:#ef4444">-${fmt(total)}</span></div>`;
+  html += '<div class="d-total"><span>Total Expenses</span><span style="color:#ef4444">-' + fmt(total) + '</span></div>';
   cont.innerHTML = html;
 }
 
@@ -393,24 +393,22 @@ function renderSummary(d) {
   const COLORS = ["#6366f1","#22c55e","#f59e0b","#ef4444","#06b6d4","#ec4899","#8b5cf6","#f97316"];
   const totalBal = d.bal.Kotak + d.bal.ICICI + d.bal.HDFC + d.bal.Wallet + d.bal.Cash;
 
-  let html = `
-  <div class="bal-grid">
-    <div class="bal-box"><div class="bal-label">Kotak</div><div class="bal-val ${d.bal.Kotak < 0 ? 'neg' : ''}">${fmt(d.bal.Kotak)}</div></div>
-    <div class="bal-box"><div class="bal-label">ICICI</div><div class="bal-val ${d.bal.ICICI < 0 ? 'neg' : ''}">${fmt(d.bal.ICICI)}</div></div>
-    <div class="bal-box"><div class="bal-label">HDFC</div><div class="bal-val ${d.bal.HDFC < 0 ? 'neg' : ''}">${fmt(d.bal.HDFC)}</div></div>
-  </div>
-  <div class="bal-grid">
-    <div class="bal-box"><div class="bal-label">Wallet</div><div class="bal-val ${d.bal.Wallet < 0 ? 'neg' : ''}">${fmt(d.bal.Wallet)}</div></div>
-    <div class="bal-box"><div class="bal-label">Cash</div><div class="bal-val ${d.bal.Cash < 0 ? 'neg' : ''}">${fmt(d.bal.Cash)}</div></div>
-    <div class="bal-box"><div class="bal-label">Total</div><div class="bal-val ${totalBal < 0 ? 'neg' : ''}">${fmt(totalBal)}</div></div>
-  </div>
-  <div class="red-row">
-    <div class="red-box"><div class="red-label">Total Expenses</div><div class="red-val">${fmt(d.totalExpense)}</div></div>
-    <div class="red-box"><div class="red-label">CC Next Bill</div><div class="red-val">${fmt(d.ccFrom3rd)}</div></div>
-  </div>
-  <div class="chart-wrap"><div class="chart-title">Expenses by Category</div><canvas id="chCat"></canvas></div>
-  <div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><canvas id="chMode"></canvas></div>
-  <div class="chart-wrap"><div class="chart-title">Salary Breakup</div><canvas id="chSalary"></canvas></div>`;
+  let html = '<div class="bal-grid">' +
+    '<div class="bal-box"><div class="bal-label">Kotak</div><div class="bal-val ' + (d.bal.Kotak < 0 ? 'neg' : '') + '">' + fmt(d.bal.Kotak) + '</div></div>' +
+    '<div class="bal-box"><div class="bal-label">ICICI</div><div class="bal-val ' + (d.bal.ICICI < 0 ? 'neg' : '') + '">' + fmt(d.bal.ICICI) + '</div></div>' +
+    '<div class="bal-box"><div class="bal-label">HDFC</div><div class="bal-val ' + (d.bal.HDFC < 0 ? 'neg' : '') + '">' + fmt(d.bal.HDFC) + '</div></div>' +
+    '</div><div class="bal-grid">' +
+    '<div class="bal-box"><div class="bal-label">Wallet</div><div class="bal-val ' + (d.bal.Wallet < 0 ? 'neg' : '') + '">' + fmt(d.bal.Wallet) + '</div></div>' +
+    '<div class="bal-box"><div class="bal-label">Cash</div><div class="bal-val ' + (d.bal.Cash < 0 ? 'neg' : '') + '">' + fmt(d.bal.Cash) + '</div></div>' +
+    '<div class="bal-box"><div class="bal-label">Total</div><div class="bal-val ' + (totalBal < 0 ? 'neg' : '') + '">' + fmt(totalBal) + '</div></div>' +
+    '</div><div class="red-row">' +
+    '<div class="red-box"><div class="red-label">Total Expenses</div><div class="red-val">' + fmt(d.totalExpense) + '</div></div>' +
+    '<div class="red-box"><div class="red-label">CC Next Bill</div><div class="red-val">' + fmt(d.ccFrom3rd) + '</div></div>' +
+    '</div>' +
+    '<div class="chart-wrap"><div class="chart-title">Monthly Trend (6 Months)</div><canvas id="chTrend"></canvas></div>' +
+    '<div class="chart-wrap"><div class="chart-title">Expenses by Category</div><canvas id="chCat"></canvas></div>' +
+    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><canvas id="chMode"></canvas></div>' +
+    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><canvas id="chSalary"></canvas></div>';
 
   cont.innerHTML = html;
 
@@ -427,7 +425,7 @@ function renderSummary(d) {
         datalabels: {
           font: { weight: 'bold', size: 9 },
           formatter: v => fmtK(v),
-          anchor: function(ctx) { var max = Math.max.apply(null, ctx.dataset.data); return ctx.dataset.data[ctx.dataIndex] >= max * 0.6 ? 'end' : 'end'; },
+          anchor: function(ctx) { return 'end'; },
           align: function(ctx) { var max = Math.max.apply(null, ctx.dataset.data); return ctx.dataset.data[ctx.dataIndex] >= max * 0.6 ? 'start' : 'right'; },
           color: function(ctx) { var max = Math.max.apply(null, ctx.dataset.data); return ctx.dataset.data[ctx.dataIndex] >= max * 0.6 ? '#ffffff' : '#334155'; }
         },
@@ -466,6 +464,92 @@ function renderSummary(d) {
   }
 }
 
+
+/* ═══════════════════════════════════════
+   TREND CHART
+   ═══════════════════════════════════════ */
+const MONTH_SHORT = ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+function linReg(data) {
+  var n = data.length, sx = 0, sy = 0, sxy = 0, sx2 = 0;
+  for (var i = 0; i < n; i++) { sx += i; sy += data[i]; sxy += i * data[i]; sx2 += i * i; }
+  var slope = (n * sxy - sx * sy) / (n * sx2 - sx * sx);
+  var intercept = (sy - slope * sx) / n;
+  var out = [];
+  for (var i = 0; i < n; i++) { out.push(Math.round(slope * i + intercept)); }
+  return out;
+}
+
+function renderTrend(data) {
+  const canvas = document.getElementById('chTrend');
+  if (!canvas) return;
+  const labels = data.map(d => MONTH_SHORT[d.month] + ' ' + String(d.year).slice(-2));
+  const expData = data.map(d => parseFloat(d.totalExpense) || 0);
+  const ccData = data.map(d => parseFloat(d.totalCC) || 0);
+  const trendLine = linReg(expData);
+
+  charts.push(new Chart(canvas, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Expenses',
+          data: expData,
+          backgroundColor: 'rgba(239,68,68,.7)',
+          borderRadius: 4,
+          borderSkipped: false,
+          order: 2
+        },
+        {
+          label: 'CC Bill Paid',
+          data: ccData,
+          backgroundColor: 'rgba(59,130,246,.6)',
+          borderRadius: 4,
+          borderSkipped: false,
+          order: 3
+        },
+        {
+          label: 'Expense Trend',
+          data: trendLine,
+          type: 'line',
+          borderColor: '#ef4444',
+          borderWidth: 2,
+          borderDash: [6, 3],
+          pointRadius: 0,
+          fill: false,
+          tension: 0,
+          order: 1
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { font: { size: 9 }, padding: 8, usePointStyle: true, pointStyleWidth: 8 }
+        },
+        datalabels: { display: false },
+        tooltip: {
+          callbacks: { label: ctx => ctx.dataset.label + ': ' + fmt(ctx.raw) }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 9, weight: 'bold' } }
+        },
+        y: {
+          grid: { color: 'rgba(148,163,184,.15)' },
+          ticks: { font: { size: 8 }, callback: v => fmtK(v) },
+          border: { display: false }
+        }
+      }
+    }
+  }));
+}
+
 document.getElementById('fetchSummary').addEventListener('click', async () => {
   const m = document.getElementById('sumMonth').value;
   const y = document.getElementById('sumYear').value;
@@ -480,6 +564,12 @@ document.getElementById('fetchSummary').addEventListener('click', async () => {
     const apiRows = (d.data && d.data.length) ? d.data : [];
     if (!apiRows.length) { cont.innerHTML = '<div class="empty-st">No data for this period</div>'; sp.classList.remove('show'); return; }
     renderSummary(calcSummary(apiRows));
+    /* Fetch trend data */
+    try {
+      const rt = await fetch(API + '?action=trend&month=' + m + '&year=' + y + '&count=6&authToken=Rakesh9869', {redirect: "follow"});
+      const dt = await rt.json();
+      if (dt.data && dt.data.length) { renderTrend(dt.data); }
+    } catch (te) { console.error('Trend fetch error:', te); }
   } catch (err) {
     console.error('Summary error:', err);
     cont.innerHTML = '<div class="empty-st">Failed to load. Check connection.</div>';
@@ -494,6 +584,6 @@ document.getElementById('fetchSummary').addEventListener('click', async () => {
    ═══════════════════════════════════════ */
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./service-worker.js')
-    .then(() => console.log('✅ Service Worker registered'))
-    .catch(err => console.error('SW registration failed:', err));
+    .then(() => console.log('SW registered'))
+    .catch(err => console.error('SW failed:', err));
 }
