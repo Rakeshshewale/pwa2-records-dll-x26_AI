@@ -1,4 +1,4 @@
-const CACHE_NAME = "expense-tracker-v2-cache-v1";
+const CACHE_NAME = "expense-tracker-v2-cache-v2";
 
 const urlsToCache = [
   "./",
@@ -11,29 +11,20 @@ const urlsToCache = [
   "https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"
 ];
 
-// Install — cache all assets
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => {
-        console.log("Cache opened");
-        return cache.addAll(urlsToCache);
-      })
-      .catch(err => {
-        console.error("Cache install failed:", err);
-      })
+      .then(cache => cache.addAll(urlsToCache))
+      .catch(err => console.error("Cache install failed:", err))
   );
 });
 
-// Fetch — cache first, network fallback
 self.addEventListener("fetch", event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
         if (response) return response;
-
         const fetchRequest = event.request.clone();
-
         return fetch(fetchRequest)
           .then(response => {
             if (!response || response.status !== 200 || response.type !== 'basic') {
@@ -46,7 +37,7 @@ self.addEventListener("fetch", event => {
             return response;
           })
           .catch(() => {
-            return new Response('Offline — check your connection.', {
+            return new Response('Offline - check your connection.', {
               headers: { 'Content-Type': 'text/plain' }
             });
           });
@@ -54,7 +45,6 @@ self.addEventListener("fetch", event => {
   );
 });
 
-// Activate — clean up old caches
 self.addEventListener("activate", event => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
