@@ -356,12 +356,31 @@ if (cat === "Money transfer" && det === "E-wallet topup" && dt.getDate() >= 3)
 <h3>8.2 Chart Order & Specs</h3>
 <table>
 <tr><th>#</th><th>Chart</th><th>Type</th><th>Data Source</th></tr>
-<tr><td>1</td><td>Expenses by Category</td><td>Horizontal bar</td><td>8 expense categories totaled</td></tr>
-<tr><td>2</td><td>Payment Mode Split</td><td>Doughnut</td><td>UPI, Card, Cash, Wallet totals</td></tr>
-<tr><td>3</td><td>Salary Breakup</td><td>Pie</td><td>Investment, Expenses, CC Bill Paid, Available</td></tr>
+<tr><td>1</td><td>Monthly Trend (6 months)</td><td>Mixed bar + line</td><td>Expenses &amp; CC bills per month, expense trend line</td></tr>
+<tr><td>2</td><td>Expenses by Category</td><td>Horizontal bar</td><td>8 expense categories totaled</td></tr>
+<tr><td>3</td><td>Payment Mode Split</td><td>Doughnut</td><td>UPI, Card, Cash, Wallet totals</td></tr>
+<tr><td>4</td><td>Salary Breakup</td><td>Pie</td><td>Investment, Expenses, CC Bill Paid, Available</td></tr>
 </table>
 
-<h3>8.3 Dynamic Bar Label Positioning</h3>
+<h3>8.3 Monthly Trend Chart</h3>
+<p>Fetches 6 months of aggregated data via the <code>trend</code> backend action. Displays:</p>
+<ul>
+<li><strong>Red bars</strong> — Total expenses per month</li>
+<li><strong>Steel blue bars</strong> — CC bill payments per month</li>
+<li><strong>Dashed red line</strong> — Linear regression trend line showing expense direction</li>
+</ul>
+<p>Y-axis shows values in ₹K/₹L format with subtle gridlines. No data labels on bars — exact values visible via tap/hover tooltip. The trend line is calculated client-side using linear regression:</p>
+<pre><code>function linReg(data) {
+  var n = data.length, sx=0, sy=0, sxy=0, sx2=0;
+  for (var i=0; i&lt;n; i++) {
+    sx+=i; sy+=data[i]; sxy+=i*data[i]; sx2+=i*i;
+  }
+  var slope = (n*sxy - sx*sy) / (n*sx2 - sx*sx);
+  var intercept = (sy - slope*sx) / n;
+  return data.map((_, i) =&gt; Math.round(slope*i + intercept));
+}</code></pre>
+
+<h3>8.4 Dynamic Bar Label Positioning (Category Chart)</h3>
 <p>Bars ≥60% of the maximum value show <strong>white text inside</strong>. Smaller bars show <strong>dark text outside</strong>. This prevents the largest bar's value from being pushed off-screen.</p>
 <pre><code>align: function(ctx) {
   var max = Math.max.apply(null, ctx.dataset.data);
@@ -470,6 +489,7 @@ b.style.width = 'calc(33.33% - 3px)'; // 3 per row</code></pre>
 <tr><th>Action</th><th>Parameters</th><th>Returns</th></tr>
 <tr><td><code>daily</code></td><td><code>date=YYYY-MM-DD</code></td><td>All rows matching that date</td></tr>
 <tr><td><code>monthdata</code></td><td><code>month=N&year=YYYY</code></td><td>All rows for that month</td></tr>
+<tr><td><code>trend</code></td><td><code>month=N&year=YYYY&count=6</code></td><td>Monthly totals (expenses + CC bills) for last 6 months</td></tr>
 </table>
 
 <h3>12.3 Row Mapper (_mr)</h3>
@@ -808,6 +828,65 @@ b.style.width = 'calc(33.33% - 3px)'; // 3 per row</code></pre>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:12px">
     <div style="background:linear-gradient(135deg,rgba(239,68,68,.07),rgba(239,68,68,.03));border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:10px;text-align:center"><div style="font-size:8px;font-weight:700;color:#ef4444;text-transform:uppercase">Total Expenses</div><div style="font-size:17px;font-weight:800;color:#ef4444;margin-top:2px">₹49,685</div></div>
     <div style="background:linear-gradient(135deg,rgba(239,68,68,.07),rgba(239,68,68,.03));border:1px solid rgba(239,68,68,.15);border-radius:8px;padding:10px;text-align:center"><div style="font-size:8px;font-weight:700;color:#ef4444;text-transform:uppercase">CC Next Bill</div><div style="font-size:17px;font-weight:800;color:#ef4444;margin-top:2px">₹29,719</div></div>
+  </div>
+
+  <div style="font-size:9px;font-weight:700;color:#64748b;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px;text-align:center">Monthly Trend (6 Months)</div>
+  <div style="position:relative;margin-bottom:14px;padding:6px 0">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;height:100px;gap:3px;padding:0 2px">
+      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:1px">
+        <span style="font-size:7px;font-weight:700;color:#334155">₹112K</span>
+        <div style="width:100%;display:flex;gap:1px;align-items:flex-end">
+          <div style="flex:1;height:74px;background:rgba(239,68,68,.7);border-radius:2px"></div>
+          <div style="flex:1;height:12px;background:rgba(59,130,246,.6);border-radius:2px"></div>
+        </div>
+        <span style="font-size:7px;color:#64748b;font-weight:700">Oct 25</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:1px">
+        <span style="font-size:7px;font-weight:700;color:#334155">₹155K</span>
+        <div style="width:100%;display:flex;gap:1px;align-items:flex-end">
+          <div style="flex:1;height:100px;background:rgba(239,68,68,.7);border-radius:2px"></div>
+          <div style="flex:1;height:30px;background:rgba(59,130,246,.6);border-radius:2px"></div>
+        </div>
+        <span style="font-size:7px;color:#64748b;font-weight:700">Nov 25</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:1px">
+        <span style="font-size:7px;font-weight:700;color:#334155">₹70K</span>
+        <div style="width:100%;display:flex;gap:1px;align-items:flex-end">
+          <div style="flex:1;height:46px;background:rgba(239,68,68,.7);border-radius:2px"></div>
+          <div style="flex:1;height:20px;background:rgba(59,130,246,.6);border-radius:2px"></div>
+        </div>
+        <span style="font-size:7px;color:#64748b;font-weight:700">Dec 25</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:1px">
+        <span style="font-size:7px;font-weight:700;color:#334155">₹87K</span>
+        <div style="width:100%;display:flex;gap:1px;align-items:flex-end">
+          <div style="flex:1;height:56px;background:rgba(239,68,68,.7);border-radius:2px"></div>
+          <div style="flex:1;height:25px;background:rgba(59,130,246,.6);border-radius:2px"></div>
+        </div>
+        <span style="font-size:7px;color:#64748b;font-weight:700">Jan 26</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:1px">
+        <span style="font-size:7px;font-weight:700;color:#334155">₹104K</span>
+        <div style="width:100%;display:flex;gap:1px;align-items:flex-end">
+          <div style="flex:1;height:68px;background:rgba(239,68,68,.7);border-radius:2px"></div>
+          <div style="flex:1;height:28px;background:rgba(59,130,246,.6);border-radius:2px"></div>
+        </div>
+        <span style="font-size:7px;color:#64748b;font-weight:700">Feb 26</span>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;flex:1;gap:1px">
+        <span style="font-size:7px;font-weight:700;color:#334155">₹50K</span>
+        <div style="width:100%;display:flex;gap:1px;align-items:flex-end">
+          <div style="flex:1;height:32px;background:rgba(239,68,68,.7);border-radius:2px"></div>
+          <div style="flex:1;height:60px;background:rgba(59,130,246,.6);border-radius:2px"></div>
+        </div>
+        <span style="font-size:7px;color:#64748b;font-weight:700">Mar 26</span>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:9px;color:#64748b;margin-bottom:14px">
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(239,68,68,.7);margin-right:3px"></span>Expenses</span>
+    <span><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:rgba(59,130,246,.6);margin-right:3px"></span>CC Bill Paid</span>
+    <span><span style="display:inline-block;width:8px;height:2px;background:#ef4444;margin-right:3px;vertical-align:middle"></span>Trend</span>
   </div>
 
   <div style="font-size:9px;font-weight:700;color:#64748b;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px;text-align:center">Expenses by Category</div>
