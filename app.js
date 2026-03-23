@@ -559,17 +559,12 @@ document.getElementById('fetchSummary').addEventListener('click', async () => {
   sp.classList.add('show'); cont.innerHTML = '';
 
   try {
-    const r = await fetch(API + '?action=monthdata&month=' + m + '&year=' + y + '&authToken=Rakesh9869', {redirect: "follow"});
+    const r = await fetch(API + '?action=summary&month=' + m + '&year=' + y + '&count=6&authToken=Rakesh9869', {redirect: "follow"});
     const d = await r.json();
     const apiRows = (d.data && d.data.length) ? d.data : [];
     if (!apiRows.length) { cont.innerHTML = '<div class="empty-st">No data for this period</div>'; sp.classList.remove('show'); return; }
     renderSummary(calcSummary(apiRows));
-    /* Fetch trend data */
-    try {
-      const rt = await fetch(API + '?action=trend&month=' + m + '&year=' + y + '&count=6&authToken=Rakesh9869', {redirect: "follow"});
-      const dt = await rt.json();
-      if (dt.data && dt.data.length) { renderTrend(dt.data); }
-    } catch (te) { console.error('Trend fetch error:', te); }
+    if (d.trend && d.trend.length) { renderTrend(d.trend); }
   } catch (err) {
     console.error('Summary error:', err);
     cont.innerHTML = '<div class="empty-st">Failed to load. Check connection.</div>';
