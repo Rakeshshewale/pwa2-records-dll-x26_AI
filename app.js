@@ -503,7 +503,7 @@ function renderSummary(d) {
     charts.push(new Chart(document.getElementById('chMode'), {
       type: 'doughnut',
       data: { labels: mFilt.l, datasets: [{ data: mFilt.d, backgroundColor: mFilt.c, borderWidth: 0, hoverOffset: 6 }] },
-      options: { responsive: true, layout: { padding: { top: 28, bottom: 10, left: 28, right: 4 } }, plugins: {
+      options: { responsive: true, layout: { padding: { top: 28, bottom: 10, left: 8, right: 90 } }, plugins: {
         legend: { display: false },
         datalabels: {
           display: function(ctx) { var v = ctx.dataset.data[ctx.dataIndex]; if (v === 0) return false; return (v / mTotal * 100) >= 5; },
@@ -530,7 +530,7 @@ function renderSummary(d) {
     charts.push(new Chart(document.getElementById('chSalary'), {
       type: 'pie',
       data: { labels: salFilt.l, datasets: [{ data: salFilt.d, backgroundColor: salFilt.c, borderWidth: 0, hoverOffset: 6 }] },
-      options: { responsive: true, layout: { padding: { top: 28, bottom: 10, left: 28, right: 4 } }, plugins: {
+      options: { responsive: true, layout: { padding: { top: 28, bottom: 10, left: 8, right: 90 } }, plugins: {
         legend: { display: false },
         datalabels: {
           display: function(ctx) { var v = ctx.dataset.data[ctx.dataIndex]; if (v === 0) return false; return (v / salTotal * 100) >= 5; },
