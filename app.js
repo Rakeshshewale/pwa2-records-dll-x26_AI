@@ -410,7 +410,6 @@ function connectorPlugin(total) {
         if (pct >= 5) return;
         var col = ds.backgroundColor[i];
         var p = arc.getProps(['x','y','startAngle','endAngle','outerRadius','innerRadius']);
-        var mid = (p.startAngle + p.endAngle) / 2;
         var oR = p.outerRadius;
         var iR = p.innerRadius || 0;
         cx.save();
@@ -423,19 +422,6 @@ function connectorPlugin(total) {
         cx.lineWidth = 2;
         cx.stroke();
         cx.restore();
-        var x1 = p.x + Math.cos(mid) * oR;
-        var y1 = p.y + Math.sin(mid) * oR;
-        var x2 = p.x + Math.cos(mid) * (oR + 20);
-        var y2 = p.y + Math.sin(mid) * (oR + 20);
-        cx.beginPath(); cx.moveTo(x1, y1); cx.lineTo(x2, y2);
-        cx.strokeStyle = col; cx.lineWidth = 2; cx.stroke();
-        cx.fillStyle = '#334155';
-        cx.font = 'bold 11px -apple-system,BlinkMacSystemFont,sans-serif';
-        cx.textAlign = Math.cos(mid) >= 0 ? 'left' : 'right';
-        cx.textBaseline = 'middle';
-        var x3 = p.x + Math.cos(mid) * (oR + 24);
-        var y3 = p.y + Math.sin(mid) * (oR + 24);
-        cx.fillText(fmtK(v), x3, y3);
       });
     }
   };
@@ -461,8 +447,8 @@ function renderSummary(d) {
     '</div>' +
     '<div class="chart-wrap"><div class="chart-title">Monthly Trend (6 Months)</div><canvas id="chTrend"></canvas></div>' +
     '<div class="chart-wrap"><div class="chart-title">Expenses by Category</div><canvas id="chCat"></canvas></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><div style="position:relative"><canvas id="chMode"></canvas></div><div id="chModeLeg" style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:10px"></div></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><div style="position:relative"><canvas id="chSalary"></canvas></div><div id="chSalLeg" style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:10px"></div></div>';
+    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><div style="display:flex;align-items:center;gap:10px"><div id="chModeLeg" style="display:grid;grid-template-columns:auto auto auto;gap:8px 6px;align-items:center"></div><div style="flex:1"></div><div style="width:110px;height:110px;flex-shrink:0;position:relative"><canvas id="chMode"></canvas></div></div></div>' +
+    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><div style="display:flex;align-items:center;gap:10px"><div id="chSalLeg" style="display:grid;grid-template-columns:auto auto auto;gap:8px 6px;align-items:center"></div><div style="flex:1"></div><div style="width:110px;height:110px;flex-shrink:0;position:relative"><canvas id="chSalary"></canvas></div></div></div>';
 
   cont.innerHTML = html;
 
@@ -488,7 +474,7 @@ function renderSummary(d) {
     }));
   }
 
-  /* Donut: Payment Modes — bottom legend, smart small labels */
+  /* Donut: Payment Modes — legend left, chart right */
   const mLabels = Object.keys(d.modeTotals);
   const mAllData = mLabels.map(k => d.modeTotals[k]);
   const mAllColors = ['#6366f1','#f59e0b','#22c55e','#06b6d4'];
@@ -497,25 +483,22 @@ function renderSummary(d) {
     const mTotal = mFilt.d.reduce((a,b) => a+b, 0);
     var legHtml = '';
     for (var mi = 0; mi < mLabels.length; mi++) {
-      if (mAllData[mi] > 0) legHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + mAllColors[mi] + ';flex-shrink:0"></div>' + mLabels[mi] + '</div>';
+      if (mAllData[mi] > 0) legHtml += '<div style="width:10px;height:10px;border-radius:50%;background:' + mAllColors[mi] + '"></div><span style="font-size:12px;color:#64748b;white-space:nowrap">' + mLabels[mi] + '</span><span style="font-weight:700;color:#334155;font-size:13px;text-align:right;white-space:nowrap">' + fmtK(mAllData[mi]) + '</span>';
     }
     document.getElementById('chModeLeg').innerHTML = legHtml;
     charts.push(new Chart(document.getElementById('chMode'), {
       type: 'doughnut',
       data: { labels: mFilt.l, datasets: [{ data: mFilt.d, backgroundColor: mFilt.c, borderWidth: 0, hoverOffset: 6 }] },
-      options: { responsive: true, layout: { padding: { top: 36, bottom: 8, left: 24, right: 24 } }, plugins: {
+      options: { responsive: true, maintainAspectRatio: false, layout: { padding: 2 }, plugins: {
         legend: { display: false },
-        datalabels: {
-          display: function(ctx) { var v = ctx.dataset.data[ctx.dataIndex]; if (v === 0) return false; return (v / mTotal * 100) >= 5; },
-          color: '#fff', font: { weight: 'bold', size: 10 }, formatter: v => v > 0 ? fmtK(v) : ''
-        },
+        datalabels: { display: false },
         tooltip: { callbacks: { label: ctx => ctx.label + ': ' + fmt(ctx.raw) } }
       }},
       plugins: [connectorPlugin(mTotal)]
     }));
   }
 
-  /* Pie: Salary Breakup — bottom legend, smart small labels */
+  /* Pie: Salary Breakup — legend left, chart right */
   if (d.totalSalary > 0) {
     const salAllData = [d.totalInvest, d.totalExpense, d.totalCC, Math.max(0, d.available)];
     const salAllLabels = ['Investment','Expenses','CC Bill Paid','Available'];
@@ -524,18 +507,15 @@ function renderSummary(d) {
     const salTotal = salFilt.d.reduce((a,b) => a+b, 0);
     var slegHtml = '';
     for (var si = 0; si < salAllLabels.length; si++) {
-      if (salAllData[si] > 0) slegHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + salAllColors[si] + ';flex-shrink:0"></div>' + salAllLabels[si] + '</div>';
+      if (salAllData[si] > 0) slegHtml += '<div style="width:10px;height:10px;border-radius:50%;background:' + salAllColors[si] + '"></div><span style="font-size:12px;color:#64748b;white-space:nowrap">' + salAllLabels[si] + '</span><span style="font-weight:700;color:#334155;font-size:13px;text-align:right;white-space:nowrap">' + fmtK(salAllData[si]) + '</span>';
     }
     document.getElementById('chSalLeg').innerHTML = slegHtml;
     charts.push(new Chart(document.getElementById('chSalary'), {
       type: 'pie',
       data: { labels: salFilt.l, datasets: [{ data: salFilt.d, backgroundColor: salFilt.c, borderWidth: 0, hoverOffset: 6 }] },
-      options: { responsive: true, layout: { padding: { top: 36, bottom: 8, left: 24, right: 24 } }, plugins: {
+      options: { responsive: true, maintainAspectRatio: false, layout: { padding: 2 }, plugins: {
         legend: { display: false },
-        datalabels: {
-          display: function(ctx) { var v = ctx.dataset.data[ctx.dataIndex]; if (v === 0) return false; return (v / salTotal * 100) >= 5; },
-          color: '#fff', font: { weight: 'bold', size: 10 }, formatter: v => v > 0 ? fmtK(v) : ''
-        },
+        datalabels: { display: false },
         tooltip: { callbacks: { label: ctx => ctx.label + ': ' + fmt(ctx.raw) } }
       }},
       plugins: [connectorPlugin(salTotal)]
