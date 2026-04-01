@@ -461,8 +461,8 @@ function renderSummary(d) {
     '</div>' +
     '<div class="chart-wrap"><div class="chart-title">Monthly Trend (6 Months)</div><canvas id="chTrend"></canvas></div>' +
     '<div class="chart-wrap"><div class="chart-title">Expenses by Category</div><canvas id="chCat"></canvas></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><canvas id="chMode"></canvas></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><canvas id="chSalary"></canvas></div>';
+    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><div id="chModeRow" style="display:flex;align-items:center;gap:10px"><div style="flex:1;position:relative"><canvas id="chMode"></canvas></div><div id="chModeLeg" style="display:flex;flex-direction:column;gap:7px;min-width:80px"></div></div></div>' +
+    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><div id="chSalRow" style="display:flex;align-items:center;gap:10px"><div style="flex:1;position:relative"><canvas id="chSalary"></canvas></div><div id="chSalLeg" style="display:flex;flex-direction:column;gap:7px;min-width:80px"></div></div></div>';
 
   cont.innerHTML = html;
 
@@ -497,16 +497,9 @@ function renderSummary(d) {
     const mTotal = mFilt.d.reduce((a,b) => a+b, 0);
     var legHtml = '';
     for (var mi = 0; mi < mLabels.length; mi++) {
-      if (mAllData[mi] > 0) legHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + mAllColors[mi] + ';flex-shrink:0"></div><div>' + mLabels[mi] + '<br><span style="font-weight:700;color:#334155;font-size:11px">' + fmtK(mAllData[mi]) + '</span></div></div>';
+      if (mAllData[mi] > 0) legHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + mAllColors[mi] + ';flex-shrink:0"></div><div>' + mLabels[mi] + '<br><span style="font-weight:700;color:#334155;font-size:10px">' + fmtK(mAllData[mi]) + '</span></div></div>';
     }
-    document.getElementById('chMode').parentElement.style.display = 'flex';
-    document.getElementById('chMode').parentElement.style.alignItems = 'center';
-    document.getElementById('chMode').parentElement.style.gap = '10px';
-    document.getElementById('chMode').style.flex = '1';
-    var legDiv = document.createElement('div');
-    legDiv.style.cssText = 'display:flex;flex-direction:column;gap:7px;min-width:80px';
-    legDiv.innerHTML = legHtml;
-    document.getElementById('chMode').parentElement.appendChild(legDiv);
+    document.getElementById('chModeLeg').innerHTML = legHtml;
     charts.push(new Chart(document.getElementById('chMode'), {
       type: 'doughnut',
       data: { labels: mFilt.l, datasets: [{ data: mFilt.d, backgroundColor: mFilt.c, borderWidth: 0, hoverOffset: 6 }] },
@@ -531,16 +524,9 @@ function renderSummary(d) {
     const salTotal = salFilt.d.reduce((a,b) => a+b, 0);
     var slegHtml = '';
     for (var si = 0; si < salAllLabels.length; si++) {
-      if (salAllData[si] > 0) slegHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + salAllColors[si] + ';flex-shrink:0"></div><div>' + salAllLabels[si] + '<br><span style="font-weight:700;color:#334155;font-size:11px">' + fmtK(salAllData[si]) + '</span></div></div>';
+      if (salAllData[si] > 0) slegHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + salAllColors[si] + ';flex-shrink:0"></div><div>' + salAllLabels[si] + '<br><span style="font-weight:700;color:#334155;font-size:10px">' + fmtK(salAllData[si]) + '</span></div></div>';
     }
-    document.getElementById('chSalary').parentElement.style.display = 'flex';
-    document.getElementById('chSalary').parentElement.style.alignItems = 'center';
-    document.getElementById('chSalary').parentElement.style.gap = '10px';
-    document.getElementById('chSalary').style.flex = '1';
-    var slegDiv = document.createElement('div');
-    slegDiv.style.cssText = 'display:flex;flex-direction:column;gap:7px;min-width:80px';
-    slegDiv.innerHTML = slegHtml;
-    document.getElementById('chSalary').parentElement.appendChild(slegDiv);
+    document.getElementById('chSalLeg').innerHTML = slegHtml;
     charts.push(new Chart(document.getElementById('chSalary'), {
       type: 'pie',
       data: { labels: salFilt.l, datasets: [{ data: salFilt.d, backgroundColor: salFilt.c, borderWidth: 0, hoverOffset: 6 }] },
