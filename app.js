@@ -387,6 +387,60 @@ function calcSummary(rows) {
 let charts = [];
 function killCharts() { charts.forEach(c => c.destroy()); charts = []; }
 
+function filtZero(data, labels, colors) {
+  var fd = [], fl = [], fc = [];
+  for (var i = 0; i < data.length; i++) {
+    if (data[i] > 0) { fd.push(data[i]); fl.push(labels[i]); fc.push(colors[i]); }
+  }
+  return { d: fd, l: fl, c: fc };
+}
+
+function connectorPlugin(total) {
+  return {
+    id: 'conn' + Math.random(),
+    afterDraw: function(ch) {
+      var meta = ch.getDatasetMeta(0);
+      var cx = ch.ctx;
+      var ds = ch.data.datasets[0];
+      if (total === 0) return;
+      meta.data.forEach(function(arc, i) {
+        var v = ds.data[i];
+        if (v === 0) return;
+        var pct = v / total * 100;
+        if (pct >= 5) return;
+        var col = ds.backgroundColor[i];
+        var p = arc.getProps(['x','y','startAngle','endAngle','outerRadius','innerRadius']);
+        var mid = (p.startAngle + p.endAngle) / 2;
+        var oR = p.outerRadius;
+        var iR = p.innerRadius || 0;
+        cx.save();
+        cx.beginPath();
+        cx.arc(p.x, p.y, oR, p.startAngle, p.endAngle);
+        if (iR > 0) { cx.arc(p.x, p.y, iR, p.endAngle, p.startAngle, true); }
+        else { cx.lineTo(p.x, p.y); }
+        cx.closePath();
+        cx.strokeStyle = col;
+        cx.lineWidth = 2;
+        cx.stroke();
+        cx.restore();
+        var x1 = p.x + Math.cos(mid) * oR;
+        var y1 = p.y + Math.sin(mid) * oR;
+        var x2 = p.x + Math.cos(mid) * (oR + 20);
+        var y2 = p.y + Math.sin(mid) * (oR + 20);
+        cx.beginPath(); cx.moveTo(x1, y1); cx.lineTo(x2, y2);
+        cx.strokeStyle = col; cx.lineWidth = 2; cx.stroke();
+        cx.fillStyle = '#334155';
+        cx.font = 'bold 11px -apple-system,BlinkMacSystemFont,sans-serif';
+        cx.textAlign = Math.cos(mid) >= 0 ? 'left' : 'right';
+        cx.textBaseline = 'middle';
+        var x3 = p.x + Math.cos(mid) * (oR + 24);
+        var y3 = p.y + Math.sin(mid) * (oR + 24);
+        cx.fillText(fmtK(v), x3, y3);
+      });
+    }
+  };
+}
+
 function renderSummary(d) {
   killCharts();
   const cont = document.getElementById('sumContent');
@@ -434,32 +488,71 @@ function renderSummary(d) {
     }));
   }
 
-  /* Donut: Payment Modes */
-  const mLabels = Object.keys(d.modeTotals).filter(k => d.modeTotals[k] > 0);
-  const mData = mLabels.map(k => d.modeTotals[k]);
-  if (mData.length) {
+  /* Donut: Payment Modes — legend on right, smart small labels */
+  const mLabels = Object.keys(d.modeTotals);
+  const mAllData = mLabels.map(k => d.modeTotals[k]);
+  const mAllColors = ['#6366f1','#f59e0b','#22c55e','#06b6d4'];
+  const mFilt = filtZero(mAllData, mLabels, mAllColors);
+  if (mFilt.d.length) {
+    const mTotal = mFilt.d.reduce((a,b) => a+b, 0);
+    var legHtml = '';
+    for (var mi = 0; mi < mLabels.length; mi++) {
+      if (mAllData[mi] > 0) legHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + mAllColors[mi] + ';flex-shrink:0"></div><div>' + mLabels[mi] + '<br><span style="font-weight:700;color:#334155;font-size:11px">' + fmtK(mAllData[mi]) + '</span></div></div>';
+    }
+    document.getElementById('chMode').parentElement.style.display = 'flex';
+    document.getElementById('chMode').parentElement.style.alignItems = 'center';
+    document.getElementById('chMode').parentElement.style.gap = '10px';
+    document.getElementById('chMode').style.flex = '1';
+    var legDiv = document.createElement('div');
+    legDiv.style.cssText = 'display:flex;flex-direction:column;gap:7px;min-width:80px';
+    legDiv.innerHTML = legHtml;
+    document.getElementById('chMode').parentElement.appendChild(legDiv);
     charts.push(new Chart(document.getElementById('chMode'), {
       type: 'doughnut',
-      data: { labels: mLabels, datasets: [{ data: mData, backgroundColor: ['#6366f1','#f59e0b','#22c55e','#06b6d4'], borderWidth: 0, hoverOffset: 6 }] },
-      options: { responsive: true, plugins: {
-        legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8, usePointStyle: true, pointStyleWidth: 8 } },
-        datalabels: { color: '#fff', font: { weight: 'bold', size: 10 }, formatter: v => fmtK(v) },
+      data: { labels: mFilt.l, datasets: [{ data: mFilt.d, backgroundColor: mFilt.c, borderWidth: 0, hoverOffset: 6 }] },
+      options: { responsive: true, layout: { padding: { top: 28, bottom: 10, left: 28, right: 4 } }, plugins: {
+        legend: { display: false },
+        datalabels: {
+          display: function(ctx) { var v = ctx.dataset.data[ctx.dataIndex]; if (v === 0) return false; return (v / mTotal * 100) >= 5; },
+          color: '#fff', font: { weight: 'bold', size: 10 }, formatter: v => v > 0 ? fmtK(v) : ''
+        },
         tooltip: { callbacks: { label: ctx => ctx.label + ': ' + fmt(ctx.raw) } }
-      }}
+      }},
+      plugins: [connectorPlugin(mTotal)]
     }));
   }
 
-  /* Pie: Salary Breakup */
+  /* Pie: Salary Breakup — legend on right, smart small labels */
   if (d.totalSalary > 0) {
-    const salData = [d.totalInvest, d.totalExpense, d.totalCC, Math.max(0, d.available)];
+    const salAllData = [d.totalInvest, d.totalExpense, d.totalCC, Math.max(0, d.available)];
+    const salAllLabels = ['Investment','Expenses','CC Bill Paid','Available'];
+    const salAllColors = ['#8b5cf6','#ef4444','#f59e0b','#22c55e'];
+    const salFilt = filtZero(salAllData, salAllLabels, salAllColors);
+    const salTotal = salFilt.d.reduce((a,b) => a+b, 0);
+    var slegHtml = '';
+    for (var si = 0; si < salAllLabels.length; si++) {
+      if (salAllData[si] > 0) slegHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + salAllColors[si] + ';flex-shrink:0"></div><div>' + salAllLabels[si] + '<br><span style="font-weight:700;color:#334155;font-size:11px">' + fmtK(salAllData[si]) + '</span></div></div>';
+    }
+    document.getElementById('chSalary').parentElement.style.display = 'flex';
+    document.getElementById('chSalary').parentElement.style.alignItems = 'center';
+    document.getElementById('chSalary').parentElement.style.gap = '10px';
+    document.getElementById('chSalary').style.flex = '1';
+    var slegDiv = document.createElement('div');
+    slegDiv.style.cssText = 'display:flex;flex-direction:column;gap:7px;min-width:80px';
+    slegDiv.innerHTML = slegHtml;
+    document.getElementById('chSalary').parentElement.appendChild(slegDiv);
     charts.push(new Chart(document.getElementById('chSalary'), {
       type: 'pie',
-      data: { labels: ['Investment','Expenses','CC Bill Paid','Available'], datasets: [{ data: salData, backgroundColor: ['#8b5cf6','#ef4444','#f59e0b','#22c55e'], borderWidth: 0, hoverOffset: 6 }] },
-      options: { responsive: true, plugins: {
-        legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8, usePointStyle: true, pointStyleWidth: 8 } },
-        datalabels: { color: '#fff', font: { weight: 'bold', size: 10 }, formatter: v => fmtK(v) },
+      data: { labels: salFilt.l, datasets: [{ data: salFilt.d, backgroundColor: salFilt.c, borderWidth: 0, hoverOffset: 6 }] },
+      options: { responsive: true, layout: { padding: { top: 28, bottom: 10, left: 28, right: 4 } }, plugins: {
+        legend: { display: false },
+        datalabels: {
+          display: function(ctx) { var v = ctx.dataset.data[ctx.dataIndex]; if (v === 0) return false; return (v / salTotal * 100) >= 5; },
+          color: '#fff', font: { weight: 'bold', size: 10 }, formatter: v => v > 0 ? fmtK(v) : ''
+        },
         tooltip: { callbacks: { label: ctx => ctx.label + ': ' + fmt(ctx.raw) } }
-      }}
+      }},
+      plugins: [connectorPlugin(salTotal)]
     }));
   }
 }
