@@ -461,8 +461,8 @@ function renderSummary(d) {
     '</div>' +
     '<div class="chart-wrap"><div class="chart-title">Monthly Trend (6 Months)</div><canvas id="chTrend"></canvas></div>' +
     '<div class="chart-wrap"><div class="chart-title">Expenses by Category</div><canvas id="chCat"></canvas></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><div id="chModeRow" style="position:relative"><canvas id="chMode"></canvas><div id="chModeLeg" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px"></div></div></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><div id="chSalRow" style="position:relative"><canvas id="chSalary"></canvas><div id="chSalLeg" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px"></div></div></div>';
+    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><div style="position:relative"><canvas id="chMode"></canvas></div><div id="chModeLeg" style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:10px"></div></div>' +
+    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><div style="position:relative"><canvas id="chSalary"></canvas></div><div id="chSalLeg" style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:10px"></div></div>';
 
   cont.innerHTML = html;
 
@@ -488,7 +488,7 @@ function renderSummary(d) {
     }));
   }
 
-  /* Donut: Payment Modes — legend on right, smart small labels */
+  /* Donut: Payment Modes — bottom legend, smart small labels */
   const mLabels = Object.keys(d.modeTotals);
   const mAllData = mLabels.map(k => d.modeTotals[k]);
   const mAllColors = ['#6366f1','#f59e0b','#22c55e','#06b6d4'];
@@ -497,13 +497,13 @@ function renderSummary(d) {
     const mTotal = mFilt.d.reduce((a,b) => a+b, 0);
     var legHtml = '';
     for (var mi = 0; mi < mLabels.length; mi++) {
-      if (mAllData[mi] > 0) legHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + mAllColors[mi] + ';flex-shrink:0"></div><div>' + mLabels[mi] + '<br><span style="font-weight:700;color:#334155;font-size:10px">' + fmtK(mAllData[mi]) + '</span></div></div>';
+      if (mAllData[mi] > 0) legHtml += '<div style="display:flex;align-items:flex-start;gap:5px;font-size:10px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + mAllColors[mi] + ';flex-shrink:0;margin-top:2px"></div><div style="line-height:1.3">' + mLabels[mi] + '<span style="display:block;font-weight:700;color:#334155;font-size:10px">' + fmtK(mAllData[mi]) + '</span></div></div>';
     }
     document.getElementById('chModeLeg').innerHTML = legHtml;
     charts.push(new Chart(document.getElementById('chMode'), {
       type: 'doughnut',
       data: { labels: mFilt.l, datasets: [{ data: mFilt.d, backgroundColor: mFilt.c, borderWidth: 0, hoverOffset: 6 }] },
-      options: { responsive: true, layout: { padding: { top: 28, bottom: 10, left: 8, right: 90 } }, plugins: {
+      options: { responsive: true, layout: { padding: { top: 24, bottom: 8, left: 24, right: 24 } }, plugins: {
         legend: { display: false },
         datalabels: {
           display: function(ctx) { var v = ctx.dataset.data[ctx.dataIndex]; if (v === 0) return false; return (v / mTotal * 100) >= 5; },
@@ -515,7 +515,7 @@ function renderSummary(d) {
     }));
   }
 
-  /* Pie: Salary Breakup — legend on right, smart small labels */
+  /* Pie: Salary Breakup — bottom legend, smart small labels */
   if (d.totalSalary > 0) {
     const salAllData = [d.totalInvest, d.totalExpense, d.totalCC, Math.max(0, d.available)];
     const salAllLabels = ['Investment','Expenses','CC Bill Paid','Available'];
@@ -524,13 +524,13 @@ function renderSummary(d) {
     const salTotal = salFilt.d.reduce((a,b) => a+b, 0);
     var slegHtml = '';
     for (var si = 0; si < salAllLabels.length; si++) {
-      if (salAllData[si] > 0) slegHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:10px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + salAllColors[si] + ';flex-shrink:0"></div><div>' + salAllLabels[si] + '<br><span style="font-weight:700;color:#334155;font-size:10px">' + fmtK(salAllData[si]) + '</span></div></div>';
+      if (salAllData[si] > 0) slegHtml += '<div style="display:flex;align-items:flex-start;gap:5px;font-size:10px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + salAllColors[si] + ';flex-shrink:0;margin-top:2px"></div><div style="line-height:1.3">' + salAllLabels[si] + '<span style="display:block;font-weight:700;color:#334155;font-size:10px">' + fmtK(salAllData[si]) + '</span></div></div>';
     }
     document.getElementById('chSalLeg').innerHTML = slegHtml;
     charts.push(new Chart(document.getElementById('chSalary'), {
       type: 'pie',
       data: { labels: salFilt.l, datasets: [{ data: salFilt.d, backgroundColor: salFilt.c, borderWidth: 0, hoverOffset: 6 }] },
-      options: { responsive: true, layout: { padding: { top: 28, bottom: 10, left: 8, right: 90 } }, plugins: {
+      options: { responsive: true, layout: { padding: { top: 24, bottom: 8, left: 24, right: 24 } }, plugins: {
         legend: { display: false },
         datalabels: {
           display: function(ctx) { var v = ctx.dataset.data[ctx.dataIndex]; if (v === 0) return false; return (v / salTotal * 100) >= 5; },
