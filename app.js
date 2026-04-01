@@ -461,8 +461,8 @@ function renderSummary(d) {
     '</div>' +
     '<div class="chart-wrap"><div class="chart-title">Monthly Trend (6 Months)</div><canvas id="chTrend"></canvas></div>' +
     '<div class="chart-wrap"><div class="chart-title">Expenses by Category</div><canvas id="chCat"></canvas></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><div id="chModeRow" style="display:flex;align-items:center;gap:10px"><div style="flex:1;position:relative"><canvas id="chMode"></canvas></div><div id="chModeLeg" style="display:flex;flex-direction:column;gap:7px;min-width:80px"></div></div></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><div id="chSalRow" style="display:flex;align-items:center;gap:10px"><div style="flex:1;position:relative"><canvas id="chSalary"></canvas></div><div id="chSalLeg" style="display:flex;flex-direction:column;gap:7px;min-width:80px"></div></div></div>';
+    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><div id="chModeRow" style="position:relative"><canvas id="chMode"></canvas><div id="chModeLeg" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px"></div></div></div>' +
+    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><div id="chSalRow" style="position:relative"><canvas id="chSalary"></canvas><div id="chSalLeg" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:7px"></div></div></div>';
 
   cont.innerHTML = html;
 
