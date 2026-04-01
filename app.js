@@ -497,7 +497,7 @@ function renderSummary(d) {
     const mTotal = mFilt.d.reduce((a,b) => a+b, 0);
     var legHtml = '';
     for (var mi = 0; mi < mLabels.length; mi++) {
-      if (mAllData[mi] > 0) legHtml += '<div style="display:flex;align-items:flex-start;gap:5px;font-size:10px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + mAllColors[mi] + ';flex-shrink:0;margin-top:2px"></div><div style="line-height:1.3">' + mLabels[mi] + '<span style="display:block;font-weight:700;color:#334155;font-size:10px">' + fmtK(mAllData[mi]) + '</span></div></div>';
+      if (mAllData[mi] > 0) legHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + mAllColors[mi] + ';flex-shrink:0"></div>' + mLabels[mi] + '</div>';
     }
     document.getElementById('chModeLeg').innerHTML = legHtml;
     charts.push(new Chart(document.getElementById('chMode'), {
@@ -524,7 +524,7 @@ function renderSummary(d) {
     const salTotal = salFilt.d.reduce((a,b) => a+b, 0);
     var slegHtml = '';
     for (var si = 0; si < salAllLabels.length; si++) {
-      if (salAllData[si] > 0) slegHtml += '<div style="display:flex;align-items:flex-start;gap:5px;font-size:10px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + salAllColors[si] + ';flex-shrink:0;margin-top:2px"></div><div style="line-height:1.3">' + salAllLabels[si] + '<span style="display:block;font-weight:700;color:#334155;font-size:10px">' + fmtK(salAllData[si]) + '</span></div></div>';
+      if (salAllData[si] > 0) slegHtml += '<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#64748b"><div style="width:9px;height:9px;border-radius:2px;background:' + salAllColors[si] + ';flex-shrink:0"></div>' + salAllLabels[si] + '</div>';
     }
     document.getElementById('chSalLeg').innerHTML = slegHtml;
     charts.push(new Chart(document.getElementById('chSalary'), {
@@ -607,7 +607,7 @@ function renderTrend(data) {
       plugins: {
         legend: {
           position: 'bottom',
-          labels: { font: { size: 9 }, padding: 8, usePointStyle: true, pointStyleWidth: 8 }
+          labels: { font: { size: 9 }, padding: 8, usePointStyle: true, pointStyle: 'rectRounded', pointStyleWidth: 9 }
         },
         datalabels: { display: false },
         tooltip: {
