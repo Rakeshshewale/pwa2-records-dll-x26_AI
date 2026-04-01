@@ -447,8 +447,8 @@ function renderSummary(d) {
     '</div>' +
     '<div class="chart-wrap"><div class="chart-title">Monthly Trend (6 Months)</div><canvas id="chTrend"></canvas></div>' +
     '<div class="chart-wrap"><div class="chart-title">Expenses by Category</div><canvas id="chCat"></canvas></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><div style="display:flex;align-items:center;gap:10px"><div id="chModeLeg" style="display:grid;grid-template-columns:auto auto auto;gap:8px 6px;align-items:center"></div><div style="flex:1"></div><div style="width:150px;height:150px;flex-shrink:0;position:relative"><canvas id="chMode"></canvas></div></div></div>' +
-    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><div style="display:flex;align-items:center;gap:10px"><div id="chSalLeg" style="display:grid;grid-template-columns:auto auto auto;gap:8px 6px;align-items:center"></div><div style="flex:1"></div><div style="width:150px;height:150px;flex-shrink:0;position:relative"><canvas id="chSalary"></canvas></div></div></div>';
+    '<div class="chart-wrap"><div class="chart-title">Payment Mode Split</div><div style="display:flex;align-items:center;gap:10px;padding:0 12px"><div id="chModeLeg" style="display:grid;grid-template-columns:auto auto auto;gap:8px 6px;align-items:center"></div><div style="flex:1"></div><div style="width:150px;height:150px;flex-shrink:0;position:relative"><canvas id="chMode"></canvas></div></div></div>' +
+    '<div class="chart-wrap"><div class="chart-title">Salary Breakup</div><div style="display:flex;align-items:center;gap:10px;padding:0 12px"><div id="chSalLeg" style="display:grid;grid-template-columns:auto auto auto;gap:8px 6px;align-items:center"></div><div style="flex:1"></div><div style="width:150px;height:150px;flex-shrink:0;position:relative"><canvas id="chSalary"></canvas></div></div></div>';
 
   cont.innerHTML = html;
 
